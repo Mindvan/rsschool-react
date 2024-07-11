@@ -1,6 +1,12 @@
 import cls from './styles.module.css';
-import { DataType } from "../../App.tsx";
 import SearchItem from "../SearchItem/SearchItem.tsx";
+
+interface DataType {
+    birth_year: string;
+    gender: string;
+    height: string;
+    name: string;
+}
 
 const SearchList = ({ results }: { results: DataType[] }) => {
     return (
