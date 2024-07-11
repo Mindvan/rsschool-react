@@ -1,0 +1,7 @@
+.search__listItemInfo {
+    font-size: 0.75em;
+    display: flex;
+    gap: 1em;
+    align-items: start;
+    color: black;
+}
