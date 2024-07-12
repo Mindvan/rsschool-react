@@ -1,66 +1,19 @@
-import "./App.css";
-import {ChangeEvent, FC, useState} from "react";
-import SearchList from "./components/SearchList/SearchList.tsx";
-import {useLocalStorage} from "./hooks/useLocalStorage.ts";
+import SearchApp from "./pages/SearchApp/SearchApp.tsx";
+import {BrowserRouter, Navigate, Route, Routes} from "react-router-dom";
+import Error from "./pages/Error/Error.tsx";
+import './App.css';
 
-const App: FC = () => {
-    const [data, setData] = useState<any>(null);
-    const [loading, setLoading] = useState<boolean>(false);
-    //const [search, setSearch] = useState<string>(localStorage.getItem('searchTerm') || '');
-    const [isClicked, setIsClicked] = useState<boolean>(false);
-    const [search, setSearch] = useLocalStorage();
-
-    const fetchData = async () => {
-        const request = `https://swapi.dev/api/people/?search=${search}`;
-
-        setLoading(true);
-        try {
-            const response = await fetch(request);
-            if (response.ok) {
-                const data = await response.json();
-                console.log("Fetched data:", data);
-                setData(data);
-            }
-        } catch (error) {
-            console.error('Error fetching data:', error);
-        }
-        setLoading(false);
-    };
-
-    const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-        const value = event.target.value;
-        setSearch(value);
-    };
-
-    const makeError = () => {
-        setIsClicked(true);
-    };
-
-    if (isClicked) {
-        throw new Error('some error happened i guess');
-    }
-
-    const msg = data ? 'No results' : 'Search for something';
-
+const App = () => {
     return (
-        <div className="wrapper">
-            <div className="section top">
-                <label htmlFor="search" className="section__title">Search</label>
-                <input
-                    type="search"
-                    id="search"
-                    value={search}
-                    onChange={handleChange}
-                    name="search"
-                />
-                <button onClick={fetchData}>Search</button>
-                <button onClick={makeError}>Click Me</button>
-            </div>
-            <div className="section bottom">
-                {loading ? <p>Loading...</p> :
-                    data && data.count > 0 ? <SearchList results={data.results}/> : <p>{msg}</p>
-                }
-            </div>
+        <div id="root">
+            <BrowserRouter>
+                <Routes>
+                    <Route path="rsschool-react/search/:page" element={<SearchApp />} />
+                    <Route path="rsschool-react/" element={<Navigate to="search/1" replace />} />
+                    <Route path="rsschool-react/error" element={<Error />} />
+                    <Route path="*" element={<Navigate to="rsschool-react/error" replace />} />
+                </Routes>
+            </BrowserRouter>
         </div>
     );
 };

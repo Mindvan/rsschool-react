@@ -24,8 +24,6 @@ class ErrorBoundary extends Component<Props, State> {
     }
 
     render() {
-        console.log(this.state.error, this.state.errorInfo);
-
         if (this.state.errorInfo) {
             return <div className={cls.error_info}>
                 <h1 style={{color: 'red'}}>YEAH, YOU BROKE IT, GREAT JOB</h1>

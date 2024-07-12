@@ -1,0 +1,29 @@
+.pagination {
+    display: flex;
+    gap: 0.25rem;
+    justify-content: center;
+}
+
+.pagination > * {
+    padding: 0.25rem 1rem;
+    background-color: white;
+    cursor: pointer;
+}
+
+.item {
+    color: black;
+}
+
+.item:hover {
+    background-color: blue;
+}
+
+.item_current {
+    color: red;
+    pointer-events: none;
+}
+
+.item_inactive {
+    opacity: 0.5;
+    pointer-events: none;
+}
