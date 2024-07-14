@@ -12,9 +12,12 @@
     "format:fix": "prettier --write ./src",
     "preview": "vite preview",
     "prepare": "husky install",
-    "test": "jest"
+    "test": "vitest run",
+    "test:ui": "vitest --ui",
+    "test:watch": "vitest"
   },
   "dependencies": {
+    "@sveltejs/adapter-auto": "^3.2.2",
     "jest-environment-jsdom": "^29.7.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
@@ -26,12 +29,14 @@
     "@testing-library/dom": "^10.3.1",
     "@testing-library/jest-dom": "^6.4.6",
     "@testing-library/react": "^16.0.0",
+    "@testing-library/svelte": "^5.2.0",
     "@types/jest": "^29.5.12",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
     "@typescript-eslint/eslint-plugin": "^7.15.0",
     "@typescript-eslint/parser": "^7.15.0",
     "@vitejs/plugin-react": "^4.3.1",
+    "@vitest/ui": "^2.0.2",
     "eslint": "^8.57.0",
     "eslint-plugin-react-compiler": "^0.0.0-experimental-0998c1e-20240625",
     "eslint-plugin-react-hooks": "^4.6.2",
@@ -45,7 +50,8 @@
     "ts-jest": "^29.2.2",
     "ts-node": "^10.9.2",
     "typescript": "^5.2.2",
-    "vite": "^5.3.1"
+    "vite": "^5.3.1",
+    "vitest": "^2.0.2"
   },
   "lint-staged": {
     "**/*.{js,jsx,ts,tsx}": [
