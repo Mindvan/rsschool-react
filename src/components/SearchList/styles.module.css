@@ -15,13 +15,3 @@ li {
     max-height: 50vh;
     gap: 1rem;
 }
-
-.search__listItem {
-    font-size: 1em;
-    display: flex;
-    flex-direction: column;
-    align-items: start;
-    padding: 0.5em;
-    background-color: white;
-    color: #747bff;
-}
