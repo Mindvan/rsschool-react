@@ -3,12 +3,24 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import cls from './styles.module.css';
 import { MouseEvent } from 'react';
 
+interface IDetails {
+    name: string;
+    birth_year: string;
+    eye_color: string;
+    gender: string;
+    hair_color: string;
+    height: string;
+    homeworld: string;
+    mass: string;
+    skin_color: string;
+};
+
 export const DetailedCard: FC = () => {
     const [params] = useSearchParams();
     const id = params.get('details');
     const navigate = useNavigate();
     const [isOpen, setIsOpen] = useState<boolean>(false);
-    const [details, setDetails] = useState(null);
+    const [details, setDetails] = useState<IDetails>(null);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
 
@@ -26,15 +38,15 @@ export const DetailedCard: FC = () => {
                 const data = await response.json();
 
                 setDetails({
-                    'Name': data.name,
-                    'Birth Year': data.birth_year,
-                    'Eye Color': data.eye_color,
-                    'Gender': data.gender,
-                    'Hair Color': data.hair_color,
-                    'Height': data.height,
-                    'Homeworld': data.homeworld,
-                    'Mass': data.mass,
-                    'Skin_color': data.skin_color
+                    name: data.name,
+                    birth_year: data.birth_year,
+                    eye_color: data.eye_color,
+                    gender: data.gender,
+                    hair_color: data.hair_color,
+                    height: data.height,
+                    homeworld: data.homeworld,
+                    mass: data.mass,
+                    skin_color: data.skin_color,
                 });
                 setError(null);
             } catch (error) {
@@ -65,7 +77,7 @@ export const DetailedCard: FC = () => {
             <div className={cls.details}>
                 {loading ? (<p>Loading details...</p>) : details ? (
                         <div>
-                            <h2>Details info for {details?.Name}</h2>
+                            <h2>Details info for {details?.name}</h2>
                             <ul>
                                 {Object.keys(details).map((key) => (
                                     <li key={key}>
