@@ -79,7 +79,7 @@ export const DetailedCard: FC = () => {
                         <div>
                             <h2>Details info for {details?.name}</h2>
                             <ul>
-                                {Object.keys(details).map((key) => (
+                                {Object.keys(details).map((key: string) => (
                                     <li key={key}>
                                         <strong>{key}:</strong> {details[key]}
                                     </li>
