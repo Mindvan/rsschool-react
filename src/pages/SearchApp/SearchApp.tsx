@@ -7,7 +7,7 @@ import Pagination from "../../components/Pagination/Pagination.tsx";
 import { useParams, useNavigate, Outlet, useSearchParams } from "react-router-dom";
 
 export const SearchApp: FC = () => {
-    const [data, setData] = useState<any>(null);
+    const [data, setData] = useState(null);
     const [loading, setLoading] = useState<boolean>(false);
     const [isClicked, setIsClicked] = useState<boolean>(false);
     const [pagesCount, setPagesCount] = useState(0);

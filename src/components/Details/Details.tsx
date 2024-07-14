@@ -8,7 +8,7 @@ export const Details: FC = () => {
     const id = params.get('details');
     const navigate = useNavigate();
     const [isOpen, setIsOpen] = useState<boolean>(false);
-    const [details, setDetails] = useState<any>(null);
+    const [details, setDetails] = useState(null);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
 
