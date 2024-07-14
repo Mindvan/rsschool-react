@@ -3,7 +3,7 @@ import {ChangeEvent} from "react";
 
 interface Props {
     search: string;
-    handleSearch: (event) => void;
+    handleSearch: (event: ChangeEvent<HTMLInputElement>) => void;
     handleFetch: () => void;
     makeError: () => void;
 }

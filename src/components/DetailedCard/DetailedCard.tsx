@@ -13,14 +13,16 @@ interface IDetails {
     homeworld: string;
     mass: string;
     skin_color: string;
-};
+}
+
+type IDetailsKey = keyof IDetails;
 
 export const DetailedCard: FC = () => {
     const [params] = useSearchParams();
     const id = params.get('details');
     const navigate = useNavigate();
     const [isOpen, setIsOpen] = useState<boolean>(false);
-    const [details, setDetails] = useState<IDetails>(null);
+    const [details, setDetails] = useState<IDetails | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
 
@@ -50,7 +52,9 @@ export const DetailedCard: FC = () => {
                 });
                 setError(null);
             } catch (error) {
-                setError(error.message);
+                if (error instanceof Error) {
+                    setError(error.message);
+                }
             } finally {
                 setLoading(false);
             }
@@ -81,7 +85,7 @@ export const DetailedCard: FC = () => {
                             <ul>
                                 {Object.keys(details).map((key: string) => (
                                     <li key={key}>
-                                        <strong>{key}:</strong> {details[key]}
+                                        <strong>{key}:</strong> {details[key as IDetailsKey]}
                                     </li>
                                 ))}
                             </ul>

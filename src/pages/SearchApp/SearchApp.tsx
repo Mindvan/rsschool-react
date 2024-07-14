@@ -7,8 +7,15 @@ import Pagination from "../../components/Pagination/Pagination.tsx";
 import { useParams, useNavigate, Outlet, useSearchParams } from "react-router-dom";
 import Search from "../../components/Search/Search.tsx";
 
+interface IData {
+    results: any[];
+    next: string | null;
+    previous: string | null;
+    count: number;
+}
+
 export const SearchApp: FC = () => {
-    const [data, setData] = useState(null);
+    const [data, setData] = useState<IData | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
     const [isClicked, setIsClicked] = useState<boolean>(false);
     const [pagesCount, setPagesCount] = useState(0);
@@ -43,7 +50,7 @@ export const SearchApp: FC = () => {
         try {
             const response = await fetch(request);
             if (response.ok) {
-                const data = await response.json();
+                const data: IData = await response.json();
                 setData(data);
                 setPagesCount(pageCounter(data.count));
             } else {
@@ -63,9 +70,9 @@ export const SearchApp: FC = () => {
         }
     };
 
-    const handleSearch = (event) => {
+    const handleSearch = (event: ChangeEvent<HTMLInputElement>) => {
         setSearch(event.target.value);
-    }
+    };
 
     const handleNewPage = (newPage: number) => {
         if (!isNaN(newPage)) {
