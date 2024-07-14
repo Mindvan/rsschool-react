@@ -1,0 +1,6 @@
+.error_info {
+    width: 100vw;
+    word-wrap: break-word;
+    flex-direction: column;
+    display: flex;
+}
