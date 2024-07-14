@@ -1,10 +1,11 @@
 import { ChangeEvent, FC, useEffect, useState } from 'react';
 import { useLocalStorage } from "../../hooks/useLocalStorage.ts";
-import SearchList from "../../components/SearchList/SearchList.tsx";
+import CardList from "../../components/CardList/CardList.tsx";
 import cls from "./styles.module.css";
 import { getPaginationNumbers, pageCounter } from "../../utils/pageCounter.ts";
 import Pagination from "../../components/Pagination/Pagination.tsx";
 import { useParams, useNavigate, Outlet, useSearchParams } from "react-router-dom";
+import Search from "../../components/Search/Search.tsx";
 
 export const SearchApp: FC = () => {
     const [data, setData] = useState(null);
@@ -62,10 +63,9 @@ export const SearchApp: FC = () => {
         }
     };
 
-    const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-        const value = event.target.value;
-        setSearch(value);
-    };
+    const handleSearch = (event) => {
+        setSearch(event.target.value);
+    }
 
     const handleNewPage = (newPage: number) => {
         if (!isNaN(newPage)) {
@@ -91,23 +91,17 @@ export const SearchApp: FC = () => {
 
     return (
         <div className={cls.wrapper}>
-            <div className={`${cls.section} ${cls.top}`}>
-                <label htmlFor="search" className={cls.section__title}>Search</label>
-                <input
-                    type="search"
-                    id={cls.search}
-                    value={search}
-                    onChange={handleChange}
-                    name="search"
-                />
-                <button onClick={handleFetch}>Search</button>
-                <button onClick={makeError}>Click Me</button>
-            </div>
+            <Search
+                search={search}
+                handleSearch={handleSearch}
+                handleFetch={handleFetch}
+                makeError={makeError}
+            />
             <div className={`${cls.section} ${cls.bottom}`}>
                 {loading ? <p>Loading...</p> :
                     data && data.count > 0 ? (
                         <>
-                            <SearchList results={data.results}/>
+                            <CardList results={data.results}/>
                             <Pagination pagesArr={pagesArr} currPage={page} setPage={handleNewPage} next={data.next}
                                         previous={data.previous}/>
                             <Outlet/>

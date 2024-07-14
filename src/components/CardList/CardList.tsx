@@ -1,5 +1,5 @@
 import cls from './styles.module.css';
-import SearchItem from '../SearchItem/SearchItem.tsx';
+import Card from '../Card/Card.tsx';
 
 interface DataType {
     birth_year: string;
@@ -14,11 +14,11 @@ const getIdFromUrl = (url: string) => {
     return parts[parts.length - 2];
 };
 
-const SearchList = ({ results }: { results: DataType[] }) => {
+const CardList = ({ results }: { results: DataType[] }) => {
     return (
         <div className={cls.search__list}>
             {results.map((item: DataType, index: number) => (
-                <SearchItem
+                <Card
                     key={index}
                     id={getIdFromUrl(item.url)}
                     gender={item.gender}
@@ -31,4 +31,4 @@ const SearchList = ({ results }: { results: DataType[] }) => {
     );
 };
 
-export default SearchList;
+export default CardList;

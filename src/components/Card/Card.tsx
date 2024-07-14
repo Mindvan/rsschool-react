@@ -10,7 +10,7 @@ interface SearchItemProps {
     name: string;
 }
 
-const SearchItem: FC<SearchItemProps> = ({ id, gender, birth_year, height, name }) => {
+const Card: FC<SearchItemProps> = ({ id, gender, birth_year, height, name }) => {
     const navigate = useNavigate();
 
     const handleClick = () => {
@@ -31,4 +31,4 @@ const SearchItem: FC<SearchItemProps> = ({ id, gender, birth_year, height, name 
     );
 };
 
-export default SearchItem;
+export default Card;

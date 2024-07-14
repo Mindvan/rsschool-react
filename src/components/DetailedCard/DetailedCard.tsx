@@ -3,7 +3,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import cls from './styles.module.css';
 import { MouseEvent } from 'react';
 
-export const Details: FC = () => {
+export const DetailedCard: FC = () => {
     const [params] = useSearchParams();
     const id = params.get('details');
     const navigate = useNavigate();
@@ -83,4 +83,4 @@ export const Details: FC = () => {
     );
 };
 
-export default Details;
+export default DetailedCard;
