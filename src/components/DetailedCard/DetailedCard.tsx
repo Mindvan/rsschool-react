@@ -2,6 +2,7 @@ import { FC, useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import cls from './styles.module.css';
 import { MouseEvent } from 'react';
+import ButtonCustom from "../UI/ButtonCustom/ButtonCustom.tsx";
 
 interface IDetails {
     name: string;
@@ -93,7 +94,7 @@ export const DetailedCard: FC = () => {
                     ) : (
                         <p>{error}</p>
                     )}
-                <button className={cls.closeButton} onClick={handleClose}>Close</button>
+                <ButtonCustom type={cls.closeButton} onClick={handleClose}>Close</ButtonCustom>
             </div>
         </div>
     );

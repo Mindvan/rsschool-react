@@ -1,5 +1,7 @@
 import cls from './styles.module.css';
 import {ChangeEvent} from "react";
+import ButtonCustom from "../UI/ButtonCustom/ButtonCustom.tsx";
+import InputCustom from "../UI/InputCustom/InputCustom.tsx";
 
 interface Props {
     search: string;
@@ -15,16 +17,14 @@ export const Search = ({search, handleSearch, handleFetch, makeError}: Props) =>
 
     return (
         <div className={`${cls.section} ${cls.top}`}>
-            <label htmlFor="search" className={cls.section__title}>Search</label>
-            <input
-                type="search"
-                id={cls.search}
-                value={search}
-                onChange={handleChange}
-                name="search"
-            />
-            <button onClick={handleFetch}>Search</button>
-            <button onClick={makeError}>Click Me</button>
+            <div className={cls.searchBlock}>
+                <InputCustom name='search' onChange={handleChange} type='search' label='Search' value={search}/>
+                <ButtonCustom onClick={handleFetch}>Search</ButtonCustom>
+            </div>
+            <div className={cls.buttonsOptions}>
+                <ButtonCustom onClick={handleFetch}>Change Theme</ButtonCustom>
+                <ButtonCustom onClick={makeError}>Click Me</ButtonCustom>
+            </div>
         </div>
     );
 };

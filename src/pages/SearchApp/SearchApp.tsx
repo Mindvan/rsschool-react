@@ -52,6 +52,7 @@ export const SearchApp: FC = () => {
             if (response.ok) {
                 const data: IData = await response.json();
                 setData(data);
+                console.log(data);
                 setPagesCount(pageCounter(data.count));
             } else {
                 console.error("Error fetching data:", response.statusText);

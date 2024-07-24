@@ -1,19 +1,22 @@
 .section {
     padding: 2rem;
     display: flex;
-    flex-direction: column;
     gap: 1rem;
 }
 
-.section__title {
-    font-size: 2em;
-    text-align: center;
-}
-
-.search {
-    height: 2rem;
-}
-
 .top {
-    background: #747bff;
+    background: blue;
+    display: flex;
+    justify-content: space-between;
+}
+
+.searchBlock {
+    display: flex;
+    gap: 1rem;
+}
+
+.buttonsOptions {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
 }
