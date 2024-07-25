@@ -1,4 +1,4 @@
-import { ChangeEvent, FC, useEffect, useState } from 'react';
+import {ChangeEvent, FC, useContext, useEffect, useState} from 'react';
 import { useLocalStorage } from "../../hooks/useLocalStorage.ts";
 import CardList from "../../components/CardList/CardList.tsx";
 import cls from "./styles.module.css";
@@ -6,6 +6,7 @@ import { getPaginationNumbers, pageCounter } from "../../utils/pageCounter.ts";
 import Pagination from "../../components/Pagination/Pagination.tsx";
 import { useParams, useNavigate, Outlet, useSearchParams } from "react-router-dom";
 import Search from "../../components/Search/Search.tsx";
+import {ThemeContext} from "../../App.tsx";
 
 interface IData {
     results: any[];
@@ -53,6 +54,7 @@ export const SearchApp: FC = () => {
                 const data: IData = await response.json();
                 setData(data);
                 console.log(data);
+
                 setPagesCount(pageCounter(data.count));
             } else {
                 console.error("Error fetching data:", response.statusText);
@@ -96,6 +98,10 @@ export const SearchApp: FC = () => {
     }
 
     const msg = data ? 'No results' : 'Search for something';
+
+    const { darkMode, handleDarkMode} = useContext(ThemeContext);
+
+    console.log(darkMode);
 
     return (
         <div className={cls.wrapper}>
