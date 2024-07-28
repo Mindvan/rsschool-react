@@ -9,12 +9,7 @@ export const useLocalStorage = (): [string, (value: string) => void] => {
         return '';
     };
 
-    const [data, setData] = useState<string>(getInitialQuery);
-
-    useEffect(() => {
-        const initialQuery = getInitialQuery();
-        setData(initialQuery);
-    }, []);
+    const [data, setData] = useState<string>(getInitialQuery());
 
     useEffect(() => {
         if (typeof window !== 'undefined') {

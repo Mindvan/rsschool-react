@@ -12,6 +12,6 @@ li {
     display: flex;
     flex-direction: column;
     overflow-y: auto;
-    max-height: 50vh;
+    height: 50vh;
     gap: 1rem;
 }

@@ -9,6 +9,8 @@ import Search from "../../components/Search/Search.tsx";
 import {resetItems} from "../../store/reducers/selected.ts";
 import {useAppDispatch} from "../../store/hooks.ts";
 import Flyout from "../../components/Flyout/Flyout.tsx";
+import {useGetPeopleQuery} from "../../store/api.ts";
+import {ThemeContext} from "../../App.tsx";
 
 interface IData {
     results: any[];
@@ -18,74 +20,38 @@ interface IData {
 }
 
 export const SearchApp: FC = () => {
-    const [data, setData] = useState<IData | null>(null);
-    const [loading, setLoading] = useState<boolean>(false);
     const [isClicked, setIsClicked] = useState<boolean>(false);
-    const [pagesCount, setPagesCount] = useState(0);
     const navigate = useNavigate();
     const { page: pageParam } = useParams<{ page: string }>();
     const initialPage = pageParam ? parseInt(pageParam, 10) : 1;
     const [page, setPage] = useState<number>(initialPage);
     const [search, setSearch] = useLocalStorage();
+    const [queryString, setQueryString] = useState<string>('');
     const [searchParams] = useSearchParams();
     const dispatch = useAppDispatch();
 
-    useEffect(() => {
-        fetchData(page);
-    }, []);
+    if (!useGetPeopleQuery) return;
+    const {data, error, isLoading, isFetching } = useGetPeopleQuery({ page, search: queryString || '' });
 
     useEffect(() => {
-        if (pageParam && !isNaN(parseInt(pageParam, 10))) {
-            fetchData(parseInt(pageParam, 10));
-        } else {
-            setPage(1);
-        }
-    }, [pageParam]);
-
-    const fetchData = async (page: number) => {
         dispatch(resetItems());
+    }, [dispatch]);
 
-        let request = `https://swapi.dev/api/people/?page=${page}`;
-
-        if (search.trim()) {
-            const searchTerm = encodeURIComponent(search.trim());
-            request = `https://swapi.dev/api/people/?search=${searchTerm}&page=${page}`;
-        }
-
-        setLoading(true);
-        try {
-            const response = await fetch(request);
-            if (response.ok) {
-                const data: IData = await response.json();
-                setData(data);
-                console.log(data);
-
-                setPagesCount(pageCounter(data.count));
-            } else {
-                console.error("Error fetching data:", response.statusText);
-            }
-        } catch (error) {
-            console.error("Error fetching data:", error);
-        }
-        setLoading(false);
-    };
-
+    const pagesCount = data ? pageCounter(data.count) : 0;
     const pagesArr = getPaginationNumbers(pagesCount);
-
-    const handleFetch = () => {
-        if (!isNaN(page)) {
-            fetchData(page);
-        }
-    };
 
     const handleSearch = (event: ChangeEvent<HTMLInputElement>) => {
         setSearch(event.target.value);
     };
 
+    const handleFetch = () => {
+        setPage(1);
+        setQueryString(search);
+    }
+
     const handleNewPage = (newPage: number) => {
         if (!isNaN(newPage)) {
             setPage(newPage);
-            fetchData(newPage);
 
             searchParams.set('search', search.trim());
             searchParams.set('page', newPage.toString());
@@ -113,17 +79,22 @@ export const SearchApp: FC = () => {
                 makeError={makeError}
             />
             <div className={`${cls.section} ${cls.bottom}`}>
-                {loading ? <p>Loading...</p> :
-                    data && data.count > 0 ? (
-                        <>
-                            <CardList results={data.results}/>
-                            <Pagination pagesArr={pagesArr} currPage={page} setPage={handleNewPage} next={data.next}
-                                        previous={data.previous}/>
-                            <Outlet/>
-                            <Flyout />
-                        </>
-                    ) : <p>{msg}</p>
-                }
+                {isLoading ? (
+                    <p>Loading...</p>
+                ) : error ? (
+                    <p>Error fetching data: {JSON.stringify(error)}</p>
+                ) : isFetching ? (
+                    <p>Fetching and caching data...</p>
+                ) : data && data.count > 0 ? (
+                    <>
+                        <CardList results={data.results} />
+                        <Pagination pagesArr={pagesArr} currPage={page} setPage={handleNewPage} next={data.next} previous={data.previous} />
+                        <Outlet />
+                        <Flyout />
+                    </>
+                ) : (
+                    <p>{msg}</p>
+                )}
             </div>
         </div>
     );
