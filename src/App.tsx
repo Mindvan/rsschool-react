@@ -4,6 +4,8 @@ import Error from "./pages/Error/Error";
 import './App.css';
 import DetailedCard from "./components/DetailedCard/DetailedCard";
 import { createContext, useState, ReactNode } from "react";
+import {Provider} from "react-redux";
+import {store} from "./store/store.ts";
 
 interface ThemeContextProps {
     darkMode: boolean;
@@ -25,19 +27,21 @@ const App = () => {
     };
 
     return (
-        <ThemeContext.Provider value={{ darkMode, handleDarkMode }}>
-            <div id="root" className={darkMode ? "dark-mode" : ""}>
-                <BrowserRouter>
-                    <Routes>
-                        <Route path="rsschool-react" element={<SearchApp />}>
-                            <Route index element={<DetailedCard />} />
-                        </Route>
-                        <Route path="rsschool-react/error" element={<Error />} />
-                        <Route path="*" element={<Navigate to="/rsschool-react/error" replace />} />
-                    </Routes>
-                </BrowserRouter>
-            </div>
-        </ThemeContext.Provider>
+        <Provider store={store}>
+            <ThemeContext.Provider value={{ darkMode, handleDarkMode }}>
+                <div id="root" className={darkMode ? "dark-mode" : ""}>
+                    <BrowserRouter>
+                        <Routes>
+                            <Route path="rsschool-react" element={<SearchApp />}>
+                                <Route index element={<DetailedCard />} />
+                            </Route>
+                            <Route path="rsschool-react/error" element={<Error />} />
+                            <Route path="*" element={<Navigate to="/rsschool-react/error" replace />} />
+                        </Routes>
+                    </BrowserRouter>
+                </div>
+            </ThemeContext.Provider>
+        </Provider>
     );
 };
 

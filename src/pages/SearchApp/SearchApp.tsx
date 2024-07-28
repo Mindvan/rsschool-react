@@ -6,7 +6,8 @@ import { getPaginationNumbers, pageCounter } from "../../utils/pageCounter.ts";
 import Pagination from "../../components/Pagination/Pagination.tsx";
 import { useParams, useNavigate, Outlet, useSearchParams } from "react-router-dom";
 import Search from "../../components/Search/Search.tsx";
-import { ThemeContext } from "../../App.tsx";
+import {resetItems} from "../../store/reducers/selected.ts";
+import {useAppDispatch} from "../../store/hooks.ts";
 
 interface IData {
     results: any[];
@@ -26,6 +27,7 @@ export const SearchApp: FC = () => {
     const [page, setPage] = useState<number>(initialPage);
     const [search, setSearch] = useLocalStorage();
     const [searchParams] = useSearchParams();
+    const dispatch = useAppDispatch();
 
     useEffect(() => {
         fetchData(page);
@@ -40,6 +42,8 @@ export const SearchApp: FC = () => {
     }, [pageParam]);
 
     const fetchData = async (page: number) => {
+        dispatch(resetItems());
+
         let request = `https://swapi.dev/api/people/?page=${page}`;
 
         if (search.trim()) {
@@ -98,10 +102,6 @@ export const SearchApp: FC = () => {
     }
 
     const msg = data ? 'No results' : 'Search for something';
-
-    // const { darkMode, handleDarkMode} = useContext(ThemeContext);
-    //
-    // console.log(darkMode);
 
     return (
         <div className={cls.wrapper}>

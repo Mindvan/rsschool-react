@@ -4,7 +4,8 @@ import cls from './styles.module.css';
 import { MouseEvent } from 'react';
 import ButtonCustom from "../UI/ButtonCustom/ButtonCustom.tsx";
 
-interface IDetails {
+export interface IDetails {
+    id: string;
     name: string;
     birth_year: string;
     eye_color: string;
@@ -41,6 +42,7 @@ export const DetailedCard: FC = () => {
                 const data = await response.json();
 
                 setDetails({
+                    id: id,
                     name: data.name,
                     birth_year: data.birth_year,
                     eye_color: data.eye_color,

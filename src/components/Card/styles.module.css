@@ -25,3 +25,10 @@
 .search__listItemInfo li {
     color: var(--text-color);
 }
+
+.checkbox {
+    position: absolute;
+    right: 1rem;
+    top: 33%;
+    scale: 1.5;
+}
