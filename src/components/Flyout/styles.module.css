@@ -1,0 +1,23 @@
+.flyout {
+    position: fixed;
+    box-sizing: border-box;
+    z-index: 1;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: var(--section-top-color);
+    box-shadow: -1px 0 7px 0 rgba(0, 0, 0, 0.2);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+}
+
+.flyout span {
+    color: var(--text-color);
+}
+
+.flyoutBtns {
+    display: flex;
+    gap: 1rem;
+}

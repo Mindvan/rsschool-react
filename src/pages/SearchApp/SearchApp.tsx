@@ -8,6 +8,7 @@ import { useParams, useNavigate, Outlet, useSearchParams } from "react-router-do
 import Search from "../../components/Search/Search.tsx";
 import {resetItems} from "../../store/reducers/selected.ts";
 import {useAppDispatch} from "../../store/hooks.ts";
+import Flyout from "../../components/Flyout/Flyout.tsx";
 
 interface IData {
     results: any[];
@@ -119,6 +120,7 @@ export const SearchApp: FC = () => {
                             <Pagination pagesArr={pagesArr} currPage={page} setPage={handleNewPage} next={data.next}
                                         previous={data.previous}/>
                             <Outlet/>
+                            <Flyout />
                         </>
                     ) : <p>{msg}</p>
                 }
