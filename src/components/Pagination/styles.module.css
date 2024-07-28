@@ -2,24 +2,25 @@
     display: flex;
     gap: 0.25rem;
     justify-content: center;
+    font-weight: 500;
 }
 
 .pagination > * {
     padding: 0.25rem 1rem;
-    background-color: white;
+    background-color: var(--background-color);
     cursor: pointer;
 }
 
 .item {
-    color: black;
+    color: var(--text-color);
 }
 
 .item:hover {
-    background-color: blue;
+    background-color: #00c0dd;
 }
 
 .item_current {
-    color: red;
+    color: #00c0dd;
     pointer-events: none;
 }
 

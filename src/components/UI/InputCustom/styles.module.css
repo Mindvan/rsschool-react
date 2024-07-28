@@ -1,6 +1,7 @@
 .label {
     font-size: 1.5rem;
     text-align: center;
+    color: var(--text-color);
 }
 
 .input {
@@ -10,7 +11,8 @@
     font-size: 1em;
     font-weight: 500;
     font-family: inherit;
-    background-color: #fff;
+    background-color: var(--background-color);
+    color: var(--text-color);
     height: auto;
     width: 25vw;
     min-width: 5rem;

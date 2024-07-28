@@ -13,6 +13,6 @@
 }
 
 .bottom {
-    height: 75%;
-    background: #74dfff;
+    height: 100%;
+    background: var(--section-bottom-color);
 }
