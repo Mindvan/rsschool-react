@@ -7,6 +7,7 @@ interface Props {
     id?: string;
     value: string;
     onChange: (e: ChangeEvent<HTMLInputElement>) => void;
+    placeholder: string;
     label?: string;
 }
 

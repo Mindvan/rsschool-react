@@ -15,9 +15,9 @@
     z-index: 9999;
 }
 
-/*.detailsItem {*/
-/*    color: var(--text-color);*/
-/*}*/
+.detailsContainer {
+    opacity: 1;
+}
 
 .backdrop {
     position: fixed;

@@ -15,6 +15,10 @@ const getIdFromUrl = (url: string) => {
 };
 
 const CardList = ({ results }: { results: DataType[] }) => {
+    if (results && results.length === 0) {
+        return (<div>No results</div>);
+    }
+
     return (
         <div className={cls.search__list}>
             {results.map((item: DataType, index: number) => (

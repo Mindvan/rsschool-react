@@ -1,12 +1,18 @@
-import {defineConfig} from 'vitest/config'
-import {svelte} from '@sveltejs/vite-plugin-svelte'
-import { render } from '@testing-library/svelte';
-import {svelteTesting} from '@testing-library/svelte/vite'
+import { mergeConfig } from 'vite'
+import { defineConfig } from 'vitest/config'
+import viteConfig from './vite.config'
 
-export default defineConfig({
-    plugins: [svelte(), svelteTesting()],
-    test: {
-        environment: 'jsdom',
-        setupFiles: ['./vitest-setup.ts'],
-    },
-})
+export default mergeConfig(
+    viteConfig,
+    defineConfig({
+        test: {
+            globals: true,
+            environment: 'jsdom',
+            setupFiles: './src/tests/vitest-setup.ts',
+            coverage: {
+                provider: 'v8',
+                reporter: ['text', 'json', 'html'],
+            },
+        },
+    }),
+)

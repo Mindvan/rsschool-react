@@ -1,4 +1,3 @@
-import React from 'react';
 import cls from './styles.module.css';
 import {useAppDispatch, useAppSelector} from "../../store/hooks.ts";
 import {resetItems} from "../../store/reducers/selected.ts";
@@ -12,17 +11,6 @@ const Flyout = () => {
         dispatch(resetItems());
     };
 
-    const dataConverter = () => {
-        const date = new Date();
-        const day = date.getDate();
-        const month = date.getMonth();
-        const year= date.getFullYear();
-        const hours = date.getHours();
-        const minutes = date.getMinutes();
-        const seconds = date.getSeconds();
-        return `${day}${month}${year}_${hours}${minutes}${seconds}`;
-    }
-
     const downloadData = () => {
         if (selectedItems.length === 0) return;
 
@@ -34,12 +22,10 @@ const Flyout = () => {
 
         const anchor = document.createElement('a');
         anchor.href = url;
-        const nowDate = dataConverter();
+        const nowDate = `${selectedItems.length}_people`;
         anchor.download = `${nowDate}.csv`;
         document.body.appendChild(anchor);
         anchor.click();
-
-        URL.revokeObjectURL(url);
     }
 
     if (selectedItems.length === 0) return null;

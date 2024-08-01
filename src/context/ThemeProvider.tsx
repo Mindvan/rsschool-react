@@ -1,4 +1,4 @@
-import {createContext, useState, ReactNode, FC} from 'react';
+import { createContext, useState, ReactNode, FC } from 'react';
 
 type Theme = 'light' | 'dark';
 
@@ -7,7 +7,7 @@ interface ThemeContextProps {
     toggleTheme: () => void;
 }
 
-const ThemeContext = createContext<ThemeContextProps | undefined>(undefined);
+export const ThemeContext = createContext<ThemeContextProps | undefined>(undefined);
 
 export const ThemeProvider: FC<{ children: ReactNode }> = ({ children }) => {
     const [theme, setTheme] = useState<Theme>('light');

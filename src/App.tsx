@@ -3,7 +3,7 @@ import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import Error from "./pages/Error/Error";
 import './App.css';
 import DetailedCard from "./components/DetailedCard/DetailedCard";
-import { createContext, useState, ReactNode } from "react";
+import { createContext, useState } from "react";
 import {Provider} from "react-redux";
 import {store} from "./store/store.ts";
 
@@ -29,7 +29,7 @@ const App = () => {
     return (
         <Provider store={store}>
             <ThemeContext.Provider value={{ darkMode, handleDarkMode }}>
-                <div id="root" className={darkMode ? "dark-mode" : ""}>
+                <div id="rootDiv" className={darkMode ? "dark-mode" : ""}>
                     <BrowserRouter>
                         <Routes>
                             <Route path="rsschool-react" element={<SearchApp />}>

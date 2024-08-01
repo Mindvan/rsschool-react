@@ -15,6 +15,7 @@ export interface IDetails {
     homeworld: string;
     mass: string;
     skin_color: string;
+    url: string;
 }
 
 type IDetailsKey = keyof IDetails;
@@ -52,6 +53,7 @@ export const DetailedCard: FC = () => {
                     homeworld: data.homeworld,
                     mass: data.mass,
                     skin_color: data.skin_color,
+                    url: data.url,
                 });
                 setError(null);
             } catch (error) {
@@ -79,25 +81,29 @@ export const DetailedCard: FC = () => {
     };
 
     return (
-        <div style={{display: isOpen ? 'block' : 'none'}}>
-            <div className={cls.backdrop} onClick={handleOutside}></div>
-            <div className={cls.details}>
-                {loading ? (<p>Loading details...</p>) : details ? (
-                        <div>
-                            <h2>Details info for {details?.name}</h2>
-                            <ul>
-                                {Object.keys(details).map((key: string) => (
-                                    <li key={key}>
-                                        <strong>{key}:</strong> {details[key as IDetailsKey]}
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
-                    ) : (
-                        <p>{error}</p>
-                    )}
-                <ButtonCustom type={cls.closeButton} onClick={handleClose}>Close</ButtonCustom>
-            </div>
+        <div>
+            {isOpen && (
+                <div className={cls.detailsContainer}>
+                    <div className={cls.backdrop} onClick={handleOutside}></div>
+                    <div className={cls.details}>
+                        {loading ? (<p>Loading details...</p>) : details ? (
+                            <div>
+                                <h2>Details info</h2>
+                                <ul>
+                                    {Object.keys(details).map((key: string) => (
+                                        <li key={key}>
+                                            <strong>{key}:</strong> {details[key as IDetailsKey]}
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                        ) : (
+                            <p>{error}</p>
+                        )}
+                        <ButtonCustom type={cls.closeButton} onClick={handleClose}>Close</ButtonCustom>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

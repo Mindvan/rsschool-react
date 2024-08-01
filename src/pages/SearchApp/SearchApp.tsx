@@ -1,4 +1,4 @@
-import { ChangeEvent, FC, useContext, useEffect, useState } from 'react';
+import { ChangeEvent, FC, useEffect, useState } from 'react';
 import { useLocalStorage } from "../../hooks/useLocalStorage.ts";
 import CardList from "../../components/CardList/CardList.tsx";
 import cls from "./styles.module.css";
@@ -10,14 +10,6 @@ import {resetItems} from "../../store/reducers/selected.ts";
 import {useAppDispatch} from "../../store/hooks.ts";
 import Flyout from "../../components/Flyout/Flyout.tsx";
 import {useGetPeopleQuery} from "../../store/api.ts";
-import {ThemeContext} from "../../App.tsx";
-
-interface IData {
-    results: any[];
-    next: string | null;
-    previous: string | null;
-    count: number;
-}
 
 export const SearchApp: FC = () => {
     const [isClicked, setIsClicked] = useState<boolean>(false);
@@ -68,8 +60,6 @@ export const SearchApp: FC = () => {
         throw new Error('some error happened i guess');
     }
 
-    const msg = data ? 'No results' : 'Search for something';
-
     return (
         <div className={cls.wrapper}>
             <Search
@@ -85,16 +75,15 @@ export const SearchApp: FC = () => {
                     <p>Error fetching data: {JSON.stringify(error)}</p>
                 ) : isFetching ? (
                     <p>Fetching and caching data...</p>
-                ) : data && data.count > 0 ? (
+                ) : data ? (
                     <>
                         <CardList results={data.results} />
-                        <Pagination pagesArr={pagesArr} currPage={page} setPage={handleNewPage} next={data.next} previous={data.previous} />
+                        {data && data.results.length > 0 && (<Pagination pagesArr={pagesArr} currPage={page} setPage={handleNewPage} next={data.next}
+                                     previous={data.previous}/>)}
                         <Outlet />
                         <Flyout />
                     </>
-                ) : (
-                    <p>{msg}</p>
-                )}
+                ) : null}
             </div>
         </div>
     );

@@ -27,7 +27,7 @@ export const api = createApi({
                     const { data } = await queryFulfilled;
                     dispatch(setPageData({ page, data: data.results }));
                 } catch (error) {
-                    console.error('Failed to fetch data:', error);
+                    console.error(error, search);
                 }
             },
         }),

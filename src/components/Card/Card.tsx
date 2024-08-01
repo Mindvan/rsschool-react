@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import cls from './styles.module.css';
-import {FC, useEffect} from "react";
+import {FC} from "react";
 import {useAppDispatch, useAppSelector} from "../../store/hooks.ts";
 import {IDetails} from "../DetailedCard/DetailedCard.tsx";
 import {addItem, removeItem} from "../../store/reducers/selected.ts";
@@ -19,9 +19,9 @@ const Card: FC<SearchItemProps> = ({ id, gender, birth_year, height, name }) => 
     const selectedItems = useAppSelector(state => state.selected.items);
     const isSelected = selectedItems.some(item => item.id === id);
 
-    useEffect(() => {
-        console.log('хранилище:', selectedItems);
-    }, [selectedItems]);
+    // useEffect(() => {
+    //     console.log('хранилище:', selectedItems);
+    // }, [selectedItems]);
 
     const handleClick = () => {
         const params = new URLSearchParams(location.search);
@@ -30,7 +30,7 @@ const Card: FC<SearchItemProps> = ({ id, gender, birth_year, height, name }) => 
     };
 
     const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const item: IDetails = { id, gender, birth_year, height, name, eye_color: "", hair_color: "", homeworld: "", mass: "", skin_color: "" };
+        const item: IDetails = { id, gender, birth_year, height, name, eye_color: "", hair_color: "", homeworld: "", mass: "", skin_color: "", url: "" };
         if (e.target.checked) {
             dispatch(addItem(item));
         } else {
