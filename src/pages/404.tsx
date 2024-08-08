@@ -1,6 +1,6 @@
 import React from 'react';
 import Head from 'next/head';
-import Error from '../components/Error/Error';
+import Error from '../components/Error/Error.tsx';
 
 const NotFound: React.FC = () => {
   return (

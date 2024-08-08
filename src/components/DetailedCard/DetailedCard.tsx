@@ -1,7 +1,6 @@
 import { FC, useEffect, useState } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useRouter } from 'next/router';
 import cls from './styles.module.css';
-import { MouseEvent } from 'react';
 import ButtonCustom from "../UI/ButtonCustom/ButtonCustom.tsx";
 
 export interface IDetails {
@@ -20,30 +19,28 @@ export interface IDetails {
 
 type IDetailsKey = keyof IDetails;
 
-export const DetailedCard: FC = () => {
-    const [params] = useSearchParams();
-    const id = params.get('details');
-    const navigate = useNavigate();
-    const [isOpen, setIsOpen] = useState<boolean>(false);
-    const [details, setDetails] = useState<IDetails | null>(null);
+const DetailedCard: FC = () => {
+    const router = useRouter();
+    const { details } = router.query;
+    const [isOpen, setIsOpen] = useState<boolean>(!!details);
+    const [detailsData, setDetailsData] = useState<IDetails | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
-        if (!id) return;
+        if (!details) return;
 
         const fetchDetails = async () => {
             try {
                 setLoading(true);
-                setIsOpen(true);
-                const response = await fetch(`https://swapi.dev/api/people/${id}`);
+                const response = await fetch(`https://swapi.dev/api/people/${details}`);
                 if (!response.ok) {
-                    throw new Error(`error ${response.statusText}`);
+                    throw new Error(`Error: ${response.statusText}`);
                 }
                 const data = await response.json();
 
-                setDetails({
-                    id: id,
+                setDetailsData({
+                    id: details as string,
                     name: data.name,
                     birth_year: data.birth_year,
                     eye_color: data.eye_color,
@@ -66,15 +63,17 @@ export const DetailedCard: FC = () => {
         };
 
         fetchDetails();
-    }, [id]);
+    }, [details]);
 
     const handleClose = () => {
         setIsOpen(false);
-        params.delete('details');
-        navigate(`?${params.toString()}`, { replace: true });
+        router.push({
+            pathname: router.pathname,
+            query: { ...router.query, details: undefined }
+        }, undefined, { shallow: true });
     };
 
-    const handleOutside = (event: MouseEvent<HTMLDivElement>) => {
+    const handleOutside = (event: React.MouseEvent<HTMLDivElement>) => {
         if (event.target === event.currentTarget) {
             handleClose();
         }
@@ -86,13 +85,13 @@ export const DetailedCard: FC = () => {
                 <div className={cls.detailsContainer}>
                     <div className={cls.backdrop} onClick={handleOutside}></div>
                     <div className={cls.details}>
-                        {loading ? (<p>Loading details...</p>) : details ? (
+                        {loading ? (<p>Loading details...</p>) : detailsData ? (
                             <div>
                                 <h2>Details info</h2>
                                 <ul>
-                                    {Object.keys(details).map((key: string) => (
+                                    {Object.keys(detailsData).map((key: string) => (
                                         <li key={key}>
-                                            <strong>{key}:</strong> {details[key as IDetailsKey]}
+                                            <strong>{key}:</strong> {detailsData[key as IDetailsKey]}
                                         </li>
                                     ))}
                                 </ul>

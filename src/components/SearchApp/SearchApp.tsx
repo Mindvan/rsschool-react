@@ -1,29 +1,29 @@
-import { ChangeEvent, FC, useEffect, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { useLocalStorage } from "../../hooks/useLocalStorage.ts";
 import CardList from "../CardList/CardList.tsx";
 import cls from "./styles.module.css";
 import { getPaginationNumbers, pageCounter } from "../../utils/pageCounter.ts";
 import Pagination from "../Pagination/Pagination.tsx";
-import { useParams, useNavigate, Outlet, useSearchParams } from "react-router-dom";
+import { useRouter } from 'next/router';
 import Search from "../Search/Search.tsx";
-import {resetItems} from "../../store/reducers/selected.ts";
-import {useAppDispatch} from "../../store/hooks.ts";
+import { resetItems } from "../../store/reducers/selected.ts";
+import { useAppDispatch } from "../../store/hooks.ts";
 import Flyout from "../Flyout/Flyout.tsx";
-import {useGetPeopleQuery} from "../../store/api.ts";
+import { useGetPeopleQuery } from "../../store/api.ts";
+import DetailedCard from "../DetailedCard/DetailedCard.tsx";
 
 export const SearchApp: FC = () => {
     const [isClicked, setIsClicked] = useState<boolean>(false);
-    const navigate = useNavigate();
-    const { page: pageParam } = useParams<{ page: string }>();
-    const initialPage = pageParam ? parseInt(pageParam, 10) : 1;
-    const [page, setPage] = useState<number>(initialPage);
+    const router = useRouter();
+    const { page, search: searchParam, details } = router.query;
+    const initialPage = page ? parseInt(page as string, 10) : 1;
+    const [currentPage, setCurrentPage] = useState<number>(initialPage);
     const [search, setSearch] = useLocalStorage();
-    const [queryString, setQueryString] = useState<string>('');
-    const [searchParams] = useSearchParams();
+    const [queryString, setQueryString] = useState<string>(searchParam as string || '');
     const dispatch = useAppDispatch();
 
     if (!useGetPeopleQuery) return;
-    const {data, error, isLoading, isFetching } = useGetPeopleQuery({ page, search: queryString || '' });
+    const { data, error, isLoading, isFetching } = useGetPeopleQuery({ page: currentPage, search: queryString || '' });
 
     useEffect(() => {
         dispatch(resetItems());
@@ -37,18 +37,22 @@ export const SearchApp: FC = () => {
     };
 
     const handleFetch = () => {
-        setPage(1);
+        setCurrentPage(1);
         setQueryString(search);
-    }
+        router.push({
+            pathname: router.pathname,
+            query: { search, page: 1 }
+        });
+    };
 
     const handleNewPage = (newPage: number) => {
         if (!isNaN(newPage)) {
-            setPage(newPage);
+            setCurrentPage(newPage);
 
-            searchParams.set('search', search.trim());
-            searchParams.set('page', newPage.toString());
-
-            navigate({ search: `?${searchParams.toString()}` });
+            router.push({
+                pathname: router.pathname,
+                query: { search: search.trim(), page: newPage.toString() }
+            });
         }
     };
 
@@ -78,9 +82,9 @@ export const SearchApp: FC = () => {
                 ) : data ? (
                     <>
                         <CardList results={data.results} />
-                        {data && data.results.length > 0 && (<Pagination pagesArr={pagesArr} currPage={page} setPage={handleNewPage} next={data.next}
-                                     previous={data.previous}/>)}
-                        <Outlet />
+                        {data && data.results.length > 0 && (<Pagination pagesArr={pagesArr} currPage={currentPage} setPage={handleNewPage} next={data.next}
+                                                                         previous={data.previous}/>)}
+                        {details && <DetailedCard />} {/* Отображаем DetailedCard если параметр 'details' присутствует */}
                         <Flyout />
                     </>
                 ) : null}

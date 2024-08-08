@@ -1,9 +1,9 @@
-import { useNavigate } from 'react-router-dom';
+import { FC } from "react";
+import { useRouter } from 'next/router';
 import cls from './styles.module.css';
-import {FC} from "react";
-import {useAppDispatch, useAppSelector} from "../../store/hooks.ts";
-import {IDetails} from "../DetailedCard/DetailedCard.tsx";
-import {addItem, removeItem} from "../../store/reducers/selected.ts";
+import { useAppDispatch, useAppSelector } from "../../store/hooks.ts";
+import { IDetails } from "../DetailedCard/DetailedCard.tsx";
+import { addItem, removeItem } from "../../store/reducers/selected.ts";
 
 interface SearchItemProps {
     id: string;
@@ -14,19 +14,16 @@ interface SearchItemProps {
 }
 
 const Card: FC<SearchItemProps> = ({ id, gender, birth_year, height, name }) => {
-    const navigate = useNavigate();
+    const router = useRouter();
     const dispatch = useAppDispatch();
     const selectedItems = useAppSelector(state => state.selected.items);
     const isSelected = selectedItems.some(item => item.id === id);
 
-    // useEffect(() => {
-    //     console.log('хранилище:', selectedItems);
-    // }, [selectedItems]);
-
     const handleClick = () => {
-        const params = new URLSearchParams(location.search);
-        params.set('details', id);
-        navigate(`?${params.toString()}`, { replace: true });
+        router.push({
+            pathname: router.pathname,
+            query: { ...router.query, details: id }
+        }, undefined, { shallow: true });
     };
 
     const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
