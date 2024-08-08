@@ -3,7 +3,7 @@ import { describe, it, expect } from 'vitest';
 import {BrowserRouter as Router} from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { store } from '../store/store.ts';
-import SearchApp from "../pages/SearchApp/SearchApp.tsx";
+import SearchApp from "../components/SearchApp/SearchApp.tsx";
 
 describe('App', () => {
     it('should render the Error component for an invalid route', async () => {

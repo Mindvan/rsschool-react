@@ -2,7 +2,7 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { describe, it, expect, beforeEach } from 'vitest';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { Provider } from 'react-redux';
-import SearchApp from "../pages/SearchApp/SearchApp.tsx";
+import SearchApp from "../components/SearchApp/SearchApp.tsx";
 import {store} from "../store/store.ts";
 
 describe('SearchApp', () => {

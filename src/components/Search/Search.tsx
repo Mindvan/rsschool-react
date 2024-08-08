@@ -2,7 +2,7 @@ import cls from './styles.module.css';
 import { ChangeEvent, useContext } from 'react';
 import ButtonCustom from '../UI/ButtonCustom/ButtonCustom.tsx';
 import InputCustom from '../UI/InputCustom/InputCustom.tsx';
-import { ThemeContext } from '../../App.tsx';
+import { ThemeContext } from '../../context/ThemeProvider.tsx';
 
 interface Props {
     search: string;

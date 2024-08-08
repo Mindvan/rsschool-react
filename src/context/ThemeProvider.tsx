@@ -1,25 +1,28 @@
 import { createContext, useState, ReactNode, FC } from 'react';
 
-type Theme = 'light' | 'dark';
-
 interface ThemeContextProps {
-    theme: Theme;
-    toggleTheme: () => void;
+    darkMode: boolean;
+    handleDarkMode: () => void;
 }
 
-export const ThemeContext = createContext<ThemeContextProps | undefined>(undefined);
+const defaultValue: ThemeContextProps = {
+    darkMode: false,
+    handleDarkMode: () => {},
+};
+
+export const ThemeContext = createContext<ThemeContextProps>(defaultValue);
 
 export const ThemeProvider: FC<{ children: ReactNode }> = ({ children }) => {
-    const [theme, setTheme] = useState<Theme>('light');
+    const [darkMode, setDarkMode] = useState(false);
 
-    const toggleTheme = () => {
-        const newTheme = theme === 'light' ? 'dark' : 'light';
-        setTheme(newTheme);
+    const handleDarkMode = () => {
+        setDarkMode(prevState => !prevState);
+        const newTheme = darkMode ? 'dark' : 'light';
         document.documentElement.setAttribute('data-theme', newTheme);
     };
 
     return (
-        <ThemeContext.Provider value={{ theme, toggleTheme }}>
+        <ThemeContext.Provider value={{ darkMode, handleDarkMode }}>
             {children}
         </ThemeContext.Provider>
     );
