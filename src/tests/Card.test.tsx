@@ -1,27 +1,25 @@
 import React from 'react';
-import {render, screen, fireEvent} from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import Card from '../components/Card/Card';
-import { BrowserRouter as Router } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
 import selectedReducer from '../store/reducers/selected';
 import '@testing-library/jest-dom';
 
-vi.mock('react-router-dom', async (importOriginal) => {
-    const actual = await importOriginal() as typeof import('react-router-dom');
-
-    return {
-        ...actual,
-        useNavigate: () => vi.fn(),
-    };
-});
+vi.mock('next/router', () => ({
+    useRouter: () => ({
+        push: vi.fn(),
+        pathname: '/details',
+        query: {},
+    }),
+}));
 
 const renderWithProviders = (ui: React.ReactElement) => {
     const store = configureStore({ reducer: { selected: selectedReducer } });
     return render(
         <Provider store={store}>
-            <Router>{ui}</Router>
+            {ui}
         </Provider>
     );
 };

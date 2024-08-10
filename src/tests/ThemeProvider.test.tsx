@@ -8,11 +8,12 @@ const ThemeConsumer: React.FC = () => {
     if (!context) {
         throw new Error('ThemeConsumer must be used within a ThemeProvider');
     }
-    const { theme, toggleTheme } = context;
+    const { darkMode, handleDarkMode } = context;
+    const theme = darkMode ? 'dark' : 'light';
     return (
         <div>
             <span data-testid="theme">{theme}</span>
-            <button data-testid="toggle" onClick={toggleTheme}>Toggle Theme</button>
+            <button data-testid="toggle" onClick={handleDarkMode}>Toggle Theme</button>
         </div>
     );
 };

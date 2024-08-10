@@ -16,9 +16,12 @@ export const ThemeProvider: FC<{ children: ReactNode }> = ({ children }) => {
     const [darkMode, setDarkMode] = useState(false);
 
     const handleDarkMode = () => {
-        setDarkMode(prevState => !prevState);
-        const newTheme = darkMode ? 'dark' : 'light';
-        document.documentElement.setAttribute('data-theme', newTheme);
+        setDarkMode(prevState => {
+            const newDarkMode = !prevState;
+            const newTheme = newDarkMode ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-theme', newTheme);
+            return newDarkMode;
+        });
     };
 
     return (

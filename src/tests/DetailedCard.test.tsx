@@ -1,41 +1,24 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import DetailedCard from '../components/DetailedCard/DetailedCard';
-import {MemoryRouter, Route, Routes} from 'react-router-dom';
-import Card from "../components/Card/Card.tsx";
-import {Provider} from "react-redux";
-import {store} from "../store/store.ts";
+import { Provider } from 'react-redux';
+import { store } from '../store/store';
 
-const cardData = {
-    id: '1',
-    name: 'Luke Skywalker',
-    birth_year: '19BBY',
-    eye_color: 'blue',
-    gender: 'male',
-    hair_color: 'blond',
-    height: '172',
-    homeworld: 'Tatooine',
-    mass: '77',
-    skin_color: 'fair',
-    url: 'https://swapi.dev/api/people/1/'
-};
-
-const renderWithRouter = (initialEntries: string[]) => {
-    return render(
-        <Provider store={store}>
-            <MemoryRouter initialEntries={initialEntries}>
-                <Routes>
-                    <Route path="/" element={<Card {...cardData} />} />
-                    <Route path="/details" element={<DetailedCard />} />
-                </Routes>
-            </MemoryRouter>
-        </Provider>
-    );
-};
+vi.mock('next/router', () => ({
+    useRouter: () => ({
+        query: { details: '1' },
+        push: vi.fn(),
+        pathname: '/details',
+    }),
+}));
 
 describe('DetailedCard Component', () => {
     it('should close the detailed card component when the close button is clicked', async () => {
-        renderWithRouter(['/details?details=1']);
+        render(
+            <Provider store={store}>
+                <DetailedCard />
+            </Provider>
+        );
 
         await waitFor(() => {
             expect(screen.queryByText(/Loading details/i)).not.toBeInTheDocument();
@@ -53,7 +36,11 @@ describe('DetailedCard Component', () => {
     });
 
     it('should render the relevant card data correctly', async () => {
-        renderWithRouter(['/details?details=1']);
+        render(
+            <Provider store={store}>
+                <DetailedCard />
+            </Provider>
+        );
 
         await waitFor(() => {
             expect(screen.queryByText(/Loading details/i)).not.toBeInTheDocument();

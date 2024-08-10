@@ -7,7 +7,7 @@ const NotFound: React.FC = () => {
     <>
       <Head>
         <title>404 | Star Wars Search</title>
-        <meta name="description" content="App Star Wars Search not found" />
+        <meta name="description" content="Not found" />
       </Head>
       <Error />
     </>
