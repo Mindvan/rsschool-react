@@ -1,1 +1,0 @@
-window.__remixManifest={"entry":{"module":"/build/entry.client-LCZOP2NC.js","imports":["/build/_shared/chunk-HIJPYBA3.js"]},"routes":{"root":{"id":"root","path":"","module":"/build/root-F7KI7DN4.js","hasAction":false,"hasLoader":false,"hasClientAction":false,"hasClientLoader":false,"hasErrorBoundary":true}},"version":"5e858b7e","url":"/build/manifest-5E858B7E.js"};

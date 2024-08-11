@@ -102,10 +102,7 @@ function handleBrowserRequest(request, responseStatusCode, responseHeaders, remi
 // app/root.tsx
 var root_exports = {};
 __export(root_exports, {
-  Error: () => Error2,
-  ErrorBoundary: () => ErrorBoundary,
-  default: () => App,
-  meta: () => meta
+  default: () => App
 });
 import {
   Links,
@@ -191,36 +188,30 @@ var defaultValue = {
 import { useState as useState5 } from "react";
 
 // app/components/ErrorBoundary/ErrorBoundary.tsx
-import { useRouteError } from "@remix-run/react";
+import { Component } from "react";
 
 // app/components/ErrorBoundary/styles.module.css
 var styles_module_default = { error_info: "aWmop" };
 
 // app/components/ErrorBoundary/ErrorBoundary.tsx
-var ErrorFallback = () => {
-  let error = useRouteError();
-  return <div className={styles_module_default.error_info}>
-    <h1 style={{ color: "red" }}>YEAH, YOU BROKE IT, GREAT JOB</h1>
-    <h2>Info:</h2>
-    <div><p>
-      {" "}
-      {error.message || String(error)}
-      {" "}
-    </p></div>
-  </div>;
-}, ErrorBoundary = ({ children }) => {
-  try {
-    return <>{children}</>;
-  } catch {
-    return <ErrorFallback />;
+var ErrorBoundary = class extends Component {
+  constructor(props) {
+    super(props), this.state = { hasError: !1, error: null };
+  }
+  static getDerivedStateFromError(error) {
+    return { hasError: !0, error };
+  }
+  componentDidCatch(error, errorInfo) {
+    console.error("ErrorBoundary:", error, errorInfo);
+  }
+  render() {
+    return this.state.hasError ? <div className={styles_module_default.error_info}>
+      <h1 style={{ color: "red" }}>YEAH, YOU BROKE IT, GREAT JOB</h1>
+      <h2>Info:</h2>
+      <div><p>{String(this.state.error)}</p></div>
+    </div> : this.props.children;
   }
 };
-
-// app/components/Error/styles.module.css
-var styles_module_default2 = { error__message: "oSM-R" };
-
-// app/components/Error/Error.tsx
-var Error2 = () => <div className={styles_module_default2.error__message}>Error 404. Try again.</div>;
 
 // app/components/SearchApp/SearchApp.tsx
 import { useState as useState4, useEffect as useEffect3 } from "react";
@@ -241,13 +232,13 @@ var useLocalStorage = () => {
 };
 
 // app/components/CardList/styles.module.css
-var styles_module_default3 = { search__list: "_36zei" };
+var styles_module_default2 = { search__list: "_36zei" };
 
 // app/components/Card/Card.tsx
 import { useNavigate, useLocation } from "@remix-run/react";
 
 // app/components/Card/styles.module.css
-var styles_module_default4 = { search__listItem: "dDO-4", search__listItemInfo: "kO8zW", checkbox: "xyP5N" };
+var styles_module_default3 = { search__listItem: "dDO-4", search__listItemInfo: "kO8zW", checkbox: "xyP5N" };
 
 // app/store/hooks.ts
 import { useDispatch, useSelector } from "react-redux";
@@ -262,16 +253,16 @@ var Card = ({ id, gender, birth_year, height, name }) => {
     let item = { id, gender, birth_year, height, name, eye_color: "", hair_color: "", homeworld: "", mass: "", skin_color: "", url: "" };
     e.target.checked ? dispatch(addItem(item)) : dispatch(removeItem(id));
   };
-  return <div onClick={handleClick} className={styles_module_default4.search__listItem}>
+  return <div onClick={handleClick} className={styles_module_default3.search__listItem}>
     <input
       type="checkbox"
-      className={styles_module_default4.checkbox}
+      className={styles_module_default3.checkbox}
       checked={isSelected}
       onChange={handleCheckboxChange}
       onClick={(e) => e.stopPropagation()}
     />
     <div>{name}</div>
-    <ul className={styles_module_default4.search__listItemInfo}>
+    <ul className={styles_module_default3.search__listItemInfo}>
       <li>
         {"Gender: "}
         {gender}
@@ -292,7 +283,7 @@ var Card = ({ id, gender, birth_year, height, name }) => {
 var getIdFromUrl = (url) => {
   let parts = url.split("/");
   return parts[parts.length - 2];
-}, CardList = ({ results }) => results && results.length === 0 ? <div>No results</div> : <div className={styles_module_default3.search__list}>{results.map(
+}, CardList = ({ results }) => results && results.length === 0 ? <div>No results</div> : <div className={styles_module_default2.search__list}>{results.map(
   (item, index) => <Card_default
     key={index}
     id={getIdFromUrl(item.url)}
@@ -304,7 +295,7 @@ var getIdFromUrl = (url) => {
 )}</div>, CardList_default = CardList;
 
 // app/components/SearchApp/styles.module.css
-var styles_module_default5 = { wrapper: "pUQW-", section: "WGGQw", bottom: "ptPMs" };
+var styles_module_default4 = { wrapper: "pUQW-", section: "WGGQw", bottom: "ptPMs" };
 
 // app/utils/pageCounter.ts
 var pageCounter = (total) => Math.ceil(total / 10), getPaginationNumbers = (pages) => {
@@ -315,7 +306,7 @@ var pageCounter = (total) => Math.ceil(total / 10), getPaginationNumbers = (page
 };
 
 // app/components/Pagination/styles.module.css
-var styles_module_default6 = { pagination: "k6i3U", item: "_4xIcK", item_current: "iIM2h", item_inactive: "xwfyg" };
+var styles_module_default5 = { pagination: "k6i3U", item: "_4xIcK", item_current: "iIM2h", item_inactive: "xwfyg" };
 
 // app/components/Pagination/Pagination.tsx
 var Pagination = ({ pagesArr, currPage, setPage, next, previous }) => {
@@ -330,20 +321,20 @@ var Pagination = ({ pagesArr, currPage, setPage, next, previous }) => {
       setPage(nextPage);
     }
   };
-  return <div className={styles_module_default6.pagination}>
-    <div onClick={handlePrev} className={previous ? `${styles_module_default6.item}` : `${styles_module_default6.item} ${styles_module_default6.item_inactive}`}>PREV</div>
+  return <div className={styles_module_default5.pagination}>
+    <div onClick={handlePrev} className={previous ? `${styles_module_default5.item}` : `${styles_module_default5.item} ${styles_module_default5.item_inactive}`}>PREV</div>
     {pagesArr.map(
       (page) => <div
         onClick={() => setPage(page)}
         key={page}
-        className={currPage === page ? `${styles_module_default6.item} ${styles_module_default6.item_current}` : `${styles_module_default6.item}`}
+        className={currPage === page ? `${styles_module_default5.item} ${styles_module_default5.item_current}` : `${styles_module_default5.item}`}
       >
         {" "}
         {page}
         {" "}
       </div>
     )}
-    <div onClick={handleNext} className={next ? `${styles_module_default6.item}` : `${styles_module_default6.item} ${styles_module_default6.item_inactive}`}>NEXT</div>
+    <div onClick={handleNext} className={next ? `${styles_module_default5.item}` : `${styles_module_default5.item} ${styles_module_default5.item_inactive}`}>NEXT</div>
   </div>;
 }, Pagination_default = Pagination;
 
@@ -351,24 +342,24 @@ var Pagination = ({ pagesArr, currPage, setPage, next, previous }) => {
 import { useSearchParams, useNavigate as useNavigate3, useLocation as useLocation3 } from "@remix-run/react";
 
 // app/components/Search/styles.module.css
-var styles_module_default7 = { section: "s2bbl", top: "_0Adwb", searchBlock: "L1WDh", buttonsOptions: "SjRzx" };
+var styles_module_default6 = { section: "s2bbl", top: "_0Adwb", searchBlock: "L1WDh", buttonsOptions: "SjRzx" };
 
 // app/components/Search/Search.tsx
 import { useContext } from "react";
 
 // app/components/UI/ButtonCustom/styles.module.css
-var styles_module_default8 = { button: "K-HZq" };
+var styles_module_default7 = { button: "K-HZq" };
 
 // app/components/UI/ButtonCustom/ButtonCustom.tsx
-var ButtonCustom = ({ children, type, ...rest }) => <button className={type ? `${styles_module_default8.button} ${type}` : styles_module_default8.button} {...rest}>{children}</button>, ButtonCustom_default = ButtonCustom;
+var ButtonCustom = ({ children, type, ...rest }) => <button className={type ? `${styles_module_default7.button} ${type}` : styles_module_default7.button} {...rest}>{children}</button>, ButtonCustom_default = ButtonCustom;
 
 // app/components/UI/InputCustom/styles.module.css
-var styles_module_default9 = { label: "Hl1wC", input: "qHOHB" };
+var styles_module_default8 = { label: "Hl1wC", input: "qHOHB" };
 
 // app/components/UI/InputCustom/InputCustom.tsx
 var InputCustom = ({ name, label, ...rest }) => <>
-  <label htmlFor={name} className={styles_module_default9.label}>{label || ""}</label>
-  <input className={styles_module_default9.input} {...rest} />
+  <label htmlFor={name} className={styles_module_default8.label}>{label || ""}</label>
+  <input className={styles_module_default8.input} {...rest} />
 </>, InputCustom_default = InputCustom;
 
 // app/components/Search/Search.tsx
@@ -376,29 +367,26 @@ var Search = ({ search, handleSearch, handleFetch }) => {
   let handleChange = (event) => {
     handleSearch(event);
   }, makeError = () => {
-    throw new Error("some error happened i guess");
+    throw new Error("ErrorBoundary reacts");
   }, { darkMode, handleDarkMode } = useContext(ThemeContext);
-  return <div className={`${styles_module_default7.section} ${styles_module_default7.top}`}>
-    <div className={styles_module_default7.searchBlock}>
+  return <div className={`${styles_module_default6.section} ${styles_module_default6.top}`}>
+    <div className={styles_module_default6.searchBlock}>
       <label htmlFor="search">Mindvan</label>
       <InputCustom_default id="search" name="search" placeholder="Type something" onChange={handleChange} type="search" value={search} />
       <ButtonCustom_default onClick={handleFetch}>Search</ButtonCustom_default>
     </div>
-    <div className={styles_module_default7.buttonsOptions}>
-      <ButtonCustom_default onClick={handleDarkMode}>
-        {"Switch to "}
-        {darkMode ? "Light" : "Dark"}
-        {" Mode"}
-      </ButtonCustom_default>
-      <ButtonCustom_default onClick={makeError}>Click Me for Error</ButtonCustom_default>
-    </div>
+    <div className={styles_module_default6.buttonsOptions}><ButtonCustom_default onClick={handleDarkMode}>
+      {"Switch to "}
+      {darkMode ? "Light" : "Dark"}
+      {" Mode"}
+    </ButtonCustom_default></div>
   </div>;
 }, Search_default = Search;
 
-// app/components/Flyout.test.tsx/styles.module.css
-var styles_module_default10 = { flyout: "nNxc0", flyoutBtns: "lfkUp" };
+// app/components/Flyout/styles.module.css
+var styles_module_default9 = { flyout: "nNxc0", flyoutBtns: "lfkUp" };
 
-// app/components/Flyout.test.tsx/Flyout.test.tsx.tsx
+// app/components/Flyout/Flyout.tsx
 var Flyout = () => {
   let dispatch = useAppDispatch(), selectedItems = useAppSelector((state) => state.selected.items), unselectAll = () => {
     dispatch(resetItems());
@@ -412,9 +400,9 @@ var Flyout = () => {
     let nowDate = `${selectedItems.length}_people`;
     anchor.download = `${nowDate}.csv`, document.body.appendChild(anchor), anchor.click();
   };
-  return selectedItems.length === 0 ? null : <div className={styles_module_default10.flyout}>
+  return selectedItems.length === 0 ? null : <div className={styles_module_default9.flyout}>
     <span>{selectedItems.length === 1 ? "1 item is selected!" : `${selectedItems.length} items are selected!`}</span>
-    <div className={styles_module_default10.flyoutBtns}>
+    <div className={styles_module_default9.flyoutBtns}>
       <ButtonCustom_default onClick={unselectAll}>Unselect all</ButtonCustom_default>
       <ButtonCustom_default onClick={downloadData}>Download</ButtonCustom_default>
     </div>
@@ -426,7 +414,7 @@ import { useEffect as useEffect2, useState as useState3 } from "react";
 import { useNavigate as useNavigate2, useLocation as useLocation2 } from "@remix-run/react";
 
 // app/components/DetailedCard/styles.module.css
-var styles_module_default11 = { details: "GgW2w", detailsContainer: "SCZSJ", backdrop: "QK4br", closeButton: "ie-8f" };
+var styles_module_default10 = { details: "GgW2w", detailsContainer: "SCZSJ", backdrop: "QK4br", closeButton: "ie-8f" };
 
 // app/components/DetailedCard/DetailedCard.tsx
 var DetailedCard = ({ details }) => {
@@ -467,9 +455,9 @@ var DetailedCard = ({ details }) => {
   }, handleOutside = (event) => {
     event.target === event.currentTarget && handleClose();
   };
-  return <div>{details && <div className={styles_module_default11.detailsContainer}>
-    <div className={styles_module_default11.backdrop} onClick={handleOutside} />
-    <div className={styles_module_default11.details}>
+  return <div>{details && <div className={styles_module_default10.detailsContainer}>
+    <div className={styles_module_default10.backdrop} onClick={handleOutside} />
+    <div className={styles_module_default10.details}>
       {loading ? <p>Loading details...</p> : detailsData ? <div>
         <h2>Details info</h2>
         <ul>{Object.keys(detailsData).map(
@@ -483,7 +471,7 @@ var DetailedCard = ({ details }) => {
           </li>
         )}</ul>
       </div> : <p>{error}</p>}
-      <ButtonCustom_default type={styles_module_default11.closeButton} onClick={handleClose}>Close</ButtonCustom_default>
+      <ButtonCustom_default type={styles_module_default10.closeButton} onClick={handleClose}>Close</ButtonCustom_default>
     </div>
   </div>}</div>;
 }, DetailedCard_default = DetailedCard;
@@ -505,13 +493,13 @@ var SearchApp = () => {
   }, handleNewPage = (newPage) => {
     isNaN(newPage) || (setCurrentPage(newPage), navigate(`?search=${queryString.trim()}&page=${newPage}`, { replace: !0 }));
   };
-  return <div className={styles_module_default5.wrapper}>
+  return <div className={styles_module_default4.wrapper}>
     <Search_default
       search={inputValue}
       handleSearch={handleSearch}
       handleFetch={handleFetch}
     />
-    <div className={`${styles_module_default5.section} ${styles_module_default5.bottom}`}>{isLoading ? <p>Loading...</p> : error ? <p>
+    <div className={`${styles_module_default4.section} ${styles_module_default4.bottom}`}>{isLoading ? <p>Loading...</p> : error ? <p>
       {"Error fetching data: "}
       {JSON.stringify(error)}
     </p> : isFetching ? <p>Fetching and caching data...</p> : data ? <>
@@ -530,18 +518,6 @@ var SearchApp = () => {
 }, SearchApp_default = SearchApp;
 
 // app/root.tsx
-var meta = () => [
-  { title: "Star Wars Searcher | Mindvan" },
-  { charset: "utf-8" },
-  {
-    property: "viewport",
-    content: "width=device-width,initial-scale=1"
-  },
-  {
-    name: "description",
-    content: "Star Wars Searcher by Mindvan"
-  }
-];
 function App() {
   let [darkMode, setDarkMode] = useState5(!1), handleDarkMode = () => {
     setDarkMode((prevState) => !prevState);
@@ -563,7 +539,7 @@ function App() {
 }
 
 // server-assets-manifest:@remix-run/dev/assets-manifest
-var assets_manifest_default = { entry: { module: "/build/entry.client-LCZOP2NC.js", imports: ["/build/_shared/chunk-HIJPYBA3.js"] }, routes: { root: { id: "root", parentId: void 0, path: "", index: void 0, caseSensitive: void 0, module: "/build/root-F7KI7DN4.js", imports: void 0, hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !0 } }, version: "5e858b7e", hmr: void 0, url: "/build/manifest-5E858B7E.js" };
+var assets_manifest_default = { entry: { module: "/build/entry.client-DLNFUCHL.js", imports: ["/build/_shared/chunk-K5QFEYVH.js"] }, routes: { root: { id: "root", parentId: void 0, path: "", index: void 0, caseSensitive: void 0, module: "/build/root-J4GBOWM6.js", imports: void 0, hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 } }, version: "98aefc5b", hmr: void 0, url: "/build/manifest-98AEFC5B.js" };
 
 // server-entry-module:@remix-run/dev/server-build
 var mode = "production", assetsBuildDirectory = "public\\build", future = { v3_fetcherPersist: !1, v3_relativeSplatPath: !1, v3_throwAbortReason: !1, unstable_singleFetch: !1, unstable_lazyRouteDiscovery: !1 }, publicPath = "/build/", entry = { module: entry_server_node_exports }, routes = {
