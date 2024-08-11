@@ -11,9 +11,13 @@ interface Props {
     makeError: () => void;
 }
 
-export const Search = ({ search, handleSearch, handleFetch, makeError }: Props) => {
+export const Search = ({ search, handleSearch, handleFetch }: Props) => {
     const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
         handleSearch(event);
+    };
+
+    const makeError = () => {
+        throw new Error('some error happened i guess');
     };
 
     const { darkMode, handleDarkMode } = useContext(ThemeContext);

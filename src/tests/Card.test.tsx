@@ -1,4 +1,3 @@
-import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import Card from '../components/Card/Card';
@@ -7,11 +6,9 @@ import { configureStore } from '@reduxjs/toolkit';
 import selectedReducer from '../store/reducers/selected';
 import '@testing-library/jest-dom';
 
-vi.mock('next/router', () => ({
+vi.mock('next/navigation', () => ({
     useRouter: () => ({
         push: vi.fn(),
-        pathname: '/details',
-        query: {},
     }),
 }));
 

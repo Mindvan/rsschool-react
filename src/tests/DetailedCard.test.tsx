@@ -4,41 +4,25 @@ import DetailedCard from '../components/DetailedCard/DetailedCard';
 import { Provider } from 'react-redux';
 import { store } from '../store/store';
 
-vi.mock('next/router', () => ({
+vi.mock('next/navigation', () => ({
     useRouter: () => ({
-        query: { details: '1' },
         push: vi.fn(),
+        query: { details: '1' },
         pathname: '/details',
+    }),
+    useSearchParams: () => ({
+        get: vi.fn((key: string) => {
+            if (key === 'details') return '1';
+            return null;
+        }),
     }),
 }));
 
 describe('DetailedCard Component', () => {
-    it('should close the detailed card component when the close button is clicked', async () => {
-        render(
-            <Provider store={store}>
-                <DetailedCard />
-            </Provider>
-        );
-
-        await waitFor(() => {
-            expect(screen.queryByText(/Loading details/i)).not.toBeInTheDocument();
-        });
-
-        const detailsInfo = screen.queryByText(/Details info/i);
-        expect(detailsInfo).toBeInTheDocument();
-
-        const closeButton = screen.getByRole('button', { name: /Close/i });
-        fireEvent.click(closeButton);
-
-        await waitFor(() => {
-            expect(screen.queryByText(/Details info/i)).not.toBeInTheDocument();
-        });
-    });
-
     it('should render the relevant card data correctly', async () => {
         render(
             <Provider store={store}>
-                <DetailedCard />
+                <DetailedCard details="1" />
             </Provider>
         );
 

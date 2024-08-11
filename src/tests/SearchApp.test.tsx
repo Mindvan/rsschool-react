@@ -4,11 +4,25 @@ import { Provider } from 'react-redux';
 import SearchApp from "../components/SearchApp/SearchApp.tsx";
 import { store } from "../store/store.ts";
 
-vi.mock('next/router', () => ({
+vi.mock('next/navigation', () => ({
     useRouter: () => ({
         push: vi.fn(),
         pathname: '/',
         query: {},
+    }),
+    useSearchParams: () => ({
+        get: vi.fn((key: string) => {
+            switch (key) {
+                case 'page':
+                    return '1';
+                case 'search':
+                    return '';
+                case 'details':
+                    return '';
+                default:
+                    return null;
+            }
+        }),
     }),
 }));
 

@@ -1,10 +1,12 @@
-import { FC, useEffect, useState } from 'react';
+"use client";
+
+import { FC, useState, ChangeEvent, useEffect } from 'react';
 import { useLocalStorage } from "../../hooks/useLocalStorage.ts";
 import CardList from "../CardList/CardList.tsx";
 import cls from "./styles.module.css";
 import { getPaginationNumbers, pageCounter } from "../../utils/pageCounter.ts";
 import Pagination from "../Pagination/Pagination.tsx";
-import { useRouter } from 'next/router';
+import { useSearchParams, useRouter } from 'next/navigation';
 import Search from "../Search/Search.tsx";
 import { resetItems } from "../../store/reducers/selected.ts";
 import { useAppDispatch } from "../../store/hooks.ts";
@@ -13,64 +15,63 @@ import { useGetPeopleQuery } from "../../store/api.ts";
 import DetailedCard from "../DetailedCard/DetailedCard.tsx";
 
 export const SearchApp: FC = () => {
-    const [isClicked, setIsClicked] = useState<boolean>(false);
     const router = useRouter();
-    const { page, search: searchParam, details } = router.query;
-    const initialPage = page ? parseInt(page as string, 10) : 1;
+    const searchParams = useSearchParams();
+    const pageParam = searchParams.get('page');
+    const searchParam = searchParams.get('search');
+    const details = searchParams.get('details');
+    const initialPage = pageParam ? parseInt(pageParam, 10) : 1;
     const [currentPage, setCurrentPage] = useState<number>(initialPage);
-    const [search, setSearch] = useLocalStorage();
-    const [queryString, setQueryString] = useState<string>(searchParam as string || '');
+    const [search, setSearch] = useLocalStorage<string>('search', '');
+    const [queryString, setQueryString] = useState<string>(searchParam || '');
+    const [inputValue, setInputValue] = useState<string>(search || '');
     const dispatch = useAppDispatch();
-
-    if (!useGetPeopleQuery) return;
-    const { data, error, isLoading, isFetching } = useGetPeopleQuery({ page: currentPage, search: queryString || '' });
 
     useEffect(() => {
         dispatch(resetItems());
     }, [dispatch]);
 
+    useEffect(() => {
+        if (searchParam) {
+            setQueryString(searchParam);
+        }
+    }, [searchParam]);
+
+    useEffect(() => {
+        if (search && !searchParam) {
+            router.push(`?search=${search}&page=1`);
+        }
+    }, [search, searchParam, router]);
+
+    const { data, error, isLoading, isFetching } = useGetPeopleQuery({ page: currentPage, search: queryString || '' });
+
     const pagesCount = data ? pageCounter(data.count) : 0;
     const pagesArr = getPaginationNumbers(pagesCount);
 
     const handleSearch = (event: ChangeEvent<HTMLInputElement>) => {
-        setSearch(event.target.value);
+        setInputValue(event.target.value);
     };
 
     const handleFetch = () => {
         setCurrentPage(1);
-        setQueryString(search);
-        router.push({
-            pathname: router.pathname,
-            query: { search, page: 1 }
-        });
+        setSearch(inputValue);
+        setQueryString(inputValue);
+        router.push(`?search=${inputValue}&page=1`);
     };
 
     const handleNewPage = (newPage: number) => {
         if (!isNaN(newPage)) {
             setCurrentPage(newPage);
-
-            router.push({
-                pathname: router.pathname,
-                query: { search: search.trim(), page: newPage.toString() }
-            });
+            router.push(`?search=${queryString.trim()}&page=${newPage}`);
         }
     };
-
-    const makeError = () => {
-        setIsClicked(true);
-    };
-
-    if (isClicked) {
-        throw new Error('some error happened i guess');
-    }
 
     return (
         <div className={cls.wrapper}>
             <Search
-                search={search}
+                search={inputValue}
                 handleSearch={handleSearch}
                 handleFetch={handleFetch}
-                makeError={makeError}
             />
             <div className={`${cls.section} ${cls.bottom}`}>
                 {isLoading ? (
@@ -82,9 +83,16 @@ export const SearchApp: FC = () => {
                 ) : data ? (
                     <>
                         <CardList results={data.results} />
-                        {data && data.results.length > 0 && (<Pagination pagesArr={pagesArr} currPage={currentPage} setPage={handleNewPage} next={data.next}
-                                                                         previous={data.previous}/>)}
-                        {details && <DetailedCard />} {/* Отображаем DetailedCard если параметр 'details' присутствует */}
+                        {data.results.length > 0 && (
+                            <Pagination
+                                pagesArr={pagesArr}
+                                currPage={currentPage}
+                                setPage={handleNewPage}
+                                next={data.next}
+                                previous={data.previous}
+                            />
+                        )}
+                        {details && <DetailedCard details={details} />}
                         <Flyout />
                     </>
                 ) : null}

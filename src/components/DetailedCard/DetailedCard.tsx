@@ -1,5 +1,5 @@
 import { FC, useEffect, useState } from 'react';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 import cls from './styles.module.css';
 import ButtonCustom from "../UI/ButtonCustom/ButtonCustom.tsx";
 
@@ -19,10 +19,12 @@ export interface IDetails {
 
 type IDetailsKey = keyof IDetails;
 
-const DetailedCard: FC = () => {
+interface DetailedCardProps {
+    details: string;
+}
+
+const DetailedCard: FC<DetailedCardProps> = ({ details }) => {
     const router = useRouter();
-    const { details } = router.query;
-    const [isOpen, setIsOpen] = useState<boolean>(!!details);
     const [detailsData, setDetailsData] = useState<IDetails | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
@@ -40,7 +42,7 @@ const DetailedCard: FC = () => {
                 const data = await response.json();
 
                 setDetailsData({
-                    id: details as string,
+                    id: details,
                     name: data.name,
                     birth_year: data.birth_year,
                     eye_color: data.eye_color,
@@ -66,11 +68,9 @@ const DetailedCard: FC = () => {
     }, [details]);
 
     const handleClose = () => {
-        setIsOpen(false);
-        router.push({
-            pathname: router.pathname,
-            query: { ...router.query, details: undefined }
-        }, undefined, { shallow: true });
+        const query = new URLSearchParams(window.location.search);
+        query.delete('details');
+        router.push(`${window.location.pathname}?${query.toString()}`, undefined, { shallow: true });
     };
 
     const handleOutside = (event: React.MouseEvent<HTMLDivElement>) => {
@@ -81,7 +81,7 @@ const DetailedCard: FC = () => {
 
     return (
         <div>
-            {isOpen && (
+            {details && (
                 <div className={cls.detailsContainer}>
                     <div className={cls.backdrop} onClick={handleOutside}></div>
                     <div className={cls.details}>
