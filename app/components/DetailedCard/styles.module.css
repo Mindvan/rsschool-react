@@ -1,0 +1,46 @@
+.details {
+    position: fixed;
+    right: 0;
+    top: 0;
+    width: 300px;
+    height: 100%;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    background-color: var(--background-color);
+    padding: 20px;
+    overflow-y: auto;
+    color: var(--text-color);
+    z-index: 9999;
+}
+
+.detailsContainer {
+    opacity: 1;
+}
+
+.backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    overflow: hidden;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 9998;
+}
+
+.closeButton {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: var(--text-color);
+    color: var(--background-color);
+    /*border: none;*/
+    /*padding: 10px;*/
+    cursor: pointer;
+}
+
+.closeButton:hover {
+    color: red;
+}

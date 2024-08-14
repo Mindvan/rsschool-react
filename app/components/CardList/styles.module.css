@@ -1,0 +1,7 @@
+.search__list {
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    height: 50vh;
+    gap: 1rem;
+}
