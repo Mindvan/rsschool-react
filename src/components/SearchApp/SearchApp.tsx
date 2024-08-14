@@ -1,36 +1,31 @@
-import { FC, useEffect, useState } from 'react';
+import { FC, ChangeEvent, useEffect, useState } from 'react';
 import { useLocalStorage } from "../../hooks/useLocalStorage.ts";
 import CardList from "../CardList/CardList.tsx";
 import cls from "./styles.module.css";
-import { getPaginationNumbers, pageCounter } from "../../utils/pageCounter.ts";
+import { getPaginationNumbers } from "../../utils/pageCounter.ts";
 import Pagination from "../Pagination/Pagination.tsx";
 import { useRouter } from 'next/router';
 import Search from "../Search/Search.tsx";
 import { resetItems } from "../../store/reducers/selected.ts";
 import { useAppDispatch } from "../../store/hooks.ts";
 import Flyout from "../Flyout/Flyout.tsx";
-import { useGetPeopleQuery } from "../../store/api.ts";
 import DetailedCard from "../DetailedCard/DetailedCard.tsx";
+import { IDetails } from '../DetailedCard/DetailedCard';
 
-export const SearchApp: FC = () => {
+export const SearchApp: FC<{ initialData: IDetails[], page: number, search: string, error?: string, totalPages: number }> = ({ initialData, page, search, error, totalPages }) => {
     const [isClicked, setIsClicked] = useState<boolean>(false);
+    const [isLoading, setIsLoading] = useState<boolean>(false);
     const router = useRouter();
-    const { page, search: searchParam, details } = router.query;
-    const initialPage = page ? parseInt(page as string, 10) : 1;
-    const [currentPage, setCurrentPage] = useState<number>(initialPage);
-    const [search, setSearch] = useLocalStorage();
-    const [queryString, setQueryString] = useState<string>(searchParam as string || '');
+    const [currentPage, setCurrentPage] = useState<number>(page);
+    const [queryString, setQueryString] = useState<string>(search);
+    const [searchTerm, setSearch] = useLocalStorage();
     const dispatch = useAppDispatch();
-
-    if (!useGetPeopleQuery) return;
-    const { data, error, isLoading, isFetching } = useGetPeopleQuery({ page: currentPage, search: queryString || '' });
 
     useEffect(() => {
         dispatch(resetItems());
     }, [dispatch]);
 
-    const pagesCount = data ? pageCounter(data.count) : 0;
-    const pagesArr = getPaginationNumbers(pagesCount);
+    const pagesArr = getPaginationNumbers(totalPages);
 
     const handleSearch = (event: ChangeEvent<HTMLInputElement>) => {
         setSearch(event.target.value);
@@ -38,21 +33,22 @@ export const SearchApp: FC = () => {
 
     const handleFetch = () => {
         setCurrentPage(1);
-        setQueryString(search);
+        setQueryString(searchTerm);
         router.push({
             pathname: router.pathname,
-            query: { search, page: 1 }
+            query: { search: searchTerm, page: 1 }
         });
     };
 
-    const handleNewPage = (newPage: number) => {
+    const handleNewPage = async (newPage: number) => {
         if (!isNaN(newPage)) {
+            setIsLoading(true);
             setCurrentPage(newPage);
-
-            router.push({
+            await router.push({
                 pathname: router.pathname,
                 query: { search: search.trim(), page: newPage.toString() }
             });
+            setIsLoading(false);
         }
     };
 
@@ -67,27 +63,26 @@ export const SearchApp: FC = () => {
     return (
         <div className={cls.wrapper}>
             <Search
-                search={search}
+                search={searchTerm}
                 handleSearch={handleSearch}
                 handleFetch={handleFetch}
                 makeError={makeError}
             />
             <div className={`${cls.section} ${cls.bottom}`}>
-                {isLoading ? (
-                    <p>Loading...</p>
-                ) : error ? (
-                    <p>Error fetching data: {JSON.stringify(error)}</p>
-                ) : isFetching ? (
-                    <p>Fetching and caching data...</p>
-                ) : data ? (
+                {error ? (
+                    <p>{error}</p>
+                ) : isLoading ? (
+                    <p>Loading data...</p>
+                ) : initialData.length > 0 ? (
                     <>
-                        <CardList results={data.results} />
-                        {data && data.results.length > 0 && (<Pagination pagesArr={pagesArr} currPage={currentPage} setPage={handleNewPage} next={data.next}
-                                                                         previous={data.previous}/>)}
-                        {details && <DetailedCard />} {/* Отображаем DetailedCard если параметр 'details' присутствует */}
+                        <CardList results={initialData} />
+                        <Pagination pagesArr={pagesArr} currPage={currentPage} setPage={handleNewPage} next={null} previous={null} />
+                        {router.query.details && <DetailedCard details={router.query.details as string} />}
                         <Flyout />
                     </>
-                ) : null}
+                ) : (
+                    <p>No data available.</p>
+                )}
             </div>
         </div>
     );
