@@ -1,5 +1,4 @@
-import { FC, useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { FC } from 'react';
 import cls from './styles.module.css';
 import ButtonCustom from "../UI/ButtonCustom/ButtonCustom.tsx";
 
@@ -17,60 +16,17 @@ export interface IDetails {
     url: string;
 }
 
-type IDetailsKey = keyof IDetails;
-
 interface DetailedCardProps {
-    details: string;
+    detailsData: IDetails | null;
+    error: string | null;
 }
 
-const DetailedCard: FC<DetailedCardProps> = ({ details }) => {
-    const router = useRouter();
-    const [detailsData, setDetailsData] = useState<IDetails | null>(null);
-    const [loading, setLoading] = useState<boolean>(true);
-    const [error, setError] = useState<string | null>(null);
-
-    useEffect(() => {
-        if (!details) return;
-
-        const fetchDetails = async () => {
-            try {
-                setLoading(true);
-                const response = await fetch(`https://swapi.dev/api/people/${details}`);
-                if (!response.ok) {
-                    throw new Error(`Error: ${response.statusText}`);
-                }
-                const data = await response.json();
-
-                setDetailsData({
-                    id: details,
-                    name: data.name,
-                    birth_year: data.birth_year,
-                    eye_color: data.eye_color,
-                    gender: data.gender,
-                    hair_color: data.hair_color,
-                    height: data.height,
-                    homeworld: data.homeworld,
-                    mass: data.mass,
-                    skin_color: data.skin_color,
-                    url: data.url,
-                });
-                setError(null);
-            } catch (error) {
-                if (error instanceof Error) {
-                    setError(error.message);
-                }
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchDetails();
-    }, [details]);
-
+const DetailedCard: FC<DetailedCardProps> = ({ detailsData, error }) => {
     const handleClose = () => {
+        // Здесь используем обычную логику для закрытия модального окна
         const query = new URLSearchParams(window.location.search);
         query.delete('details');
-        router.push(`${window.location.pathname}?${query.toString()}`, undefined, { shallow: true });
+        window.history.pushState({}, '', `${window.location.pathname}?${query.toString()}`);
     };
 
     const handleOutside = (event: React.MouseEvent<HTMLDivElement>) => {
@@ -81,27 +37,23 @@ const DetailedCard: FC<DetailedCardProps> = ({ details }) => {
 
     return (
         <div>
-            {details && (
+            {detailsData ? (
                 <div className={cls.detailsContainer}>
                     <div className={cls.backdrop} onClick={handleOutside}></div>
                     <div className={cls.details}>
-                        {loading ? (<p>Loading details...</p>) : detailsData ? (
-                            <div>
-                                <h2>Details info</h2>
-                                <ul>
-                                    {Object.keys(detailsData).map((key: string) => (
-                                        <li key={key}>
-                                            <strong>{key}:</strong> {detailsData[key as IDetailsKey]}
-                                        </li>
-                                    ))}
-                                </ul>
-                            </div>
-                        ) : (
-                            <p>{error}</p>
-                        )}
+                        <h2>Details info</h2>
+                        <ul>
+                            {Object.keys(detailsData).map((key: string) => (
+                                <li key={key}>
+                                    <strong>{key}:</strong> {detailsData[key as keyof IDetails]}
+                                </li>
+                            ))}
+                        </ul>
                         <ButtonCustom type={cls.closeButton} onClick={handleClose}>Close</ButtonCustom>
                     </div>
                 </div>
+            ) : (
+                <p>{error}</p>
             )}
         </div>
     );

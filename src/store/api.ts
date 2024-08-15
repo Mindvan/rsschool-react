@@ -2,7 +2,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import {IDetails} from "../components/DetailedCard/DetailedCard.tsx";
 import { setPageData } from "./reducers/selected.ts";
 
-interface IData {
+export interface IData {
     results: IDetails[];
     next: string | null;
     previous: string | null;

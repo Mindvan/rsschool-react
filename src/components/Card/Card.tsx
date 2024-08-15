@@ -1,6 +1,6 @@
 "use client";
 
-import { FC } from "react";
+import { FC } from 'react';
 import { useRouter } from 'next/navigation';
 import cls from './styles.module.css';
 import { useAppDispatch, useAppSelector } from "../../store/hooks.ts";
@@ -25,9 +25,8 @@ const Card: FC<SearchItemProps> = ({ id, gender, birth_year, height, name }) => 
         const currentUrl = new URL(window.location.href);
         const queryParams = new URLSearchParams(currentUrl.search);
         queryParams.set('details', id);
-        router.push(`${currentUrl.pathname}?${queryParams.toString()}`, { shallow: true });
+        router.push(`/?${queryParams.toString()}`, { shallow: true });
     };
-
 
     const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const item: IDetails = { id, gender, birth_year, height, name, eye_color: "", hair_color: "", homeworld: "", mass: "", skin_color: "", url: "" };

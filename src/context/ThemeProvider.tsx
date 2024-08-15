@@ -1,28 +1,22 @@
-import { createContext, useState, ReactNode, FC } from 'react';
+// src/context/ThemeProvider.tsx
+'use client'; // Помечаем как клиентский компонент
+
+import React, { createContext, useState, ReactNode, FC } from 'react';
 
 interface ThemeContextProps {
     darkMode: boolean;
     handleDarkMode: () => void;
 }
 
-const defaultValue: ThemeContextProps = {
+export const ThemeContext = createContext<ThemeContextProps>({
     darkMode: false,
     handleDarkMode: () => {},
-};
+});
 
-export const ThemeContext = createContext<ThemeContextProps>(defaultValue);
+const ThemeProvider: FC<{ children: ReactNode }> = ({ children }) => {
+    const [darkMode, setDarkMode] = useState<boolean>(false);
 
-export const ThemeProvider: FC<{ children: ReactNode }> = ({ children }) => {
-    const [darkMode, setDarkMode] = useState(false);
-
-    const handleDarkMode = () => {
-        setDarkMode(prevState => {
-            const newDarkMode = !prevState;
-            const newTheme = newDarkMode ? 'dark' : 'light';
-            document.documentElement.setAttribute('data-theme', newTheme);
-            return newDarkMode;
-        });
-    };
+    const handleDarkMode = () => setDarkMode((prevMode) => !prevMode);
 
     return (
         <ThemeContext.Provider value={{ darkMode, handleDarkMode }}>
@@ -30,3 +24,5 @@ export const ThemeProvider: FC<{ children: ReactNode }> = ({ children }) => {
         </ThemeContext.Provider>
     );
 };
+
+export default ThemeProvider;

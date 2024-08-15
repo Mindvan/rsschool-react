@@ -1,29 +1,48 @@
-import cls from "./styles.module.css";
+// src/components/Pagination/Pagination.tsx
 
-const Pagination = ({ pagesArr, currPage, setPage, next, previous }: { pagesArr: number[]; currPage: number; setPage: (value: number) => void; next: string | null; previous: string | null; }) => {
-    const handlePrev = () => {
-        if (previous) {
-            const prevPage = currPage - 1;
-            setPage(prevPage);
-        }
-    };
+import Link from 'next/link';
+import { FC } from 'react';
+import cls from './styles.module.css';
 
-    const handleNext = () => {
-        if (next) {
-            const nextPage = currPage + 1;
-            setPage(nextPage);
-        }
-    };
+interface PaginationProps {
+    pagesArr: number[];
+    currPage: number;
+    next: string | null;
+    previous: string | null;
+    searchQuery: string;
+}
 
+const Pagination: FC<PaginationProps> = ({ pagesArr, currPage, next, previous, searchQuery }) => {
     return (
-        <div className={cls.pagination}>
-            <div onClick={handlePrev} className={previous ? `${cls.item}` : `${cls.item} ${cls.item_inactive}`}>PREV</div>
-            {pagesArr.map((page) => (
-                <div onClick={() => setPage(page)} key={page}
-                     className={currPage === page ? `${cls.item} ${cls.item_current}` : `${cls.item}`}> {page} </div>
-            ))}
-            <div onClick={handleNext} className={next ? `${cls.item}` : `${cls.item} ${cls.item_inactive}`}>NEXT</div>
-        </div>
+        <nav>
+            <ul className={cls.pagination}>
+                <li className={previous ? cls.item : `${cls.item} ${cls.item_inactive}`}>
+                    {previous ? (
+                        <Link href={`/?search=${encodeURIComponent(searchQuery)}&page=${currPage - 1}`}>
+                            Previous
+                        </Link>
+                    ) : (
+                        'Previous'
+                    )}
+                </li>
+                {pagesArr.map((page) => (
+                    <li key={page} className={currPage === page ? `${cls.item} ${cls.item_current}` : cls.item}>
+                        <Link href={`/?search=${encodeURIComponent(searchQuery)}&page=${page}`}>
+                            {page}
+                        </Link>
+                    </li>
+                ))}
+                <li className={next ? cls.item : `${cls.item} ${cls.item_inactive}`}>
+                    {next ? (
+                        <Link href={`/?search=${encodeURIComponent(searchQuery)}&page=${currPage + 1}`}>
+                            Next
+                        </Link>
+                    ) : (
+                        'Next'
+                    )}
+                </li>
+            </ul>
+        </nav>
     );
 };
 
