@@ -1,5 +1,7 @@
+'use client';
+
 import cls from './styles.module.css';
-import Card from '../Card/Card.tsx';
+import Card from '../Card/Card';
 
 interface DataType {
     birth_year: string;
@@ -20,18 +22,18 @@ const CardList = ({ results }: { results: DataType[] }) => {
     }
 
     return (
-        <div className={cls.search__list}>
-            {results.map((item: DataType) => (
-                <Card
-                    key={item.url}
-                    id={getIdFromUrl(item.url)}
-                    gender={item.gender}
-                    height={item.height}
-                    birth_year={item.birth_year}
-                    name={item.name}
-                />
-            ))}
-        </div>
+      <div className={cls.search__list}>
+          {results.map((item: DataType) => (
+            <Card
+              key={item.url}
+              id={getIdFromUrl(item.url)}
+              gender={item.gender}
+              height={item.height}
+              birth_year={item.birth_year}
+              name={item.name}
+            />
+          ))}
+      </div>
     );
 };
 

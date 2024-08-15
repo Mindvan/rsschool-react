@@ -5,7 +5,7 @@ export async function GET(request: Request) {
     const searchQuery = url.searchParams.get('query') || '';
 
     try {
-        const response = await fetch(`https://swapi.dev/api/people/?search=${searchQuery}`);
+        const response = await fetch(`https://swapi.dev/api/people/?search=${encodeURIComponent(searchQuery)}`);
         const data = await response.json();
         return NextResponse.json(data);
     } catch (error) {

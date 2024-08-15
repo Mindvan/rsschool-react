@@ -1,4 +1,3 @@
-// src/app/page.tsx
 import SearchApp from '../components/SearchApp/SearchApp';
 
 export async function generateMetadata({ searchParams }: { searchParams: { search?: string; page?: string } }) {
@@ -7,17 +6,16 @@ export async function generateMetadata({ searchParams }: { searchParams: { searc
 }
 
 export default async function Page({ searchParams }: { searchParams: { search?: string; page?: string } }) {
-    const search = searchParams.search || '';
+    const query = searchParams.search || '';
     const page = parseInt(searchParams.page || '1', 10);
 
-    // Получение данных с сервера
-    const response = await fetch(`http://localhost:3000/api/search?search=${search}&page=${page}`);
+    const response = await fetch(`https://swapi.dev/api/people/?search=${encodeURIComponent(query)}&page=${page}`);
     const data = await response.json();
 
     return (
-        <SearchApp
-            searchParams={{ search, page: searchParams.page }}
-            data={data}
-        />
+      <SearchApp
+        searchParams={{ search: query, page: searchParams.page }}
+        data={data}
+      />
     );
 }
