@@ -8,8 +8,13 @@ export interface FormData {
   email: string;
   password: string;
   confirmPassword: string;
-  file: File | null;
+  file: FileData | null;
   accept: boolean;
+}
+
+interface FileData {
+  name: string;
+  size: string;
 }
 
 interface FormState {

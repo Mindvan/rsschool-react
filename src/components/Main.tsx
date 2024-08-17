@@ -7,11 +7,10 @@ const Main = () => {
 
   return (
     <div>
-      <h1>Main Page</h1>
-      <h2>Uncontrolled Form Data:</h2>
+      <h2>Uncontrolled:</h2>
       <pre>{JSON.stringify(uncontrolledFormData, null, 2)}</pre>
 
-      <h2>React Hook Form Data:</h2>
+      <h2>React Hook Form:</h2>
       <pre>{JSON.stringify(hookFormData, null, 2)}</pre>
     </div>
   );
