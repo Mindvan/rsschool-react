@@ -2,68 +2,62 @@ import { useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 import { setHookFormData } from '../store/formSlice';
 import { FormData } from '../store/formSlice';
+import Input from './UI/Input/Input.tsx';
+import Select from './UI/Select/Select.tsx';
+import Checkbox from './UI/Checkbox/Checkbox.tsx';
+import Button from './UI/Button/Button.tsx';
+import Form from './Form/Form.tsx';
 
 const HookForm = () => {
   const { register, handleSubmit } = useForm<FormData>();
   const dispatch = useDispatch();
 
   const onSubmit = (data: FormData) => {
-    const { file, ...otherData } = data;
-    const metadata = file && file[0] ? { name: file[0].name, size: file[0].size } : null;
-    dispatch(setHookFormData({ ...otherData, file: metadata }));
+    if (!data.file) {
+      dispatch(setHookFormData(data));
+    } else {
+      const metadata = data.file?.[0]
+        ? {
+            name: data.file[0].name,
+            size: data.file[0].size,
+          }
+        : null;
+
+      dispatch(setHookFormData({ ...data, file: metadata }));
+    }
   };
 
   return (
-    <div>
-      <h2>React Hook Form:</h2>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <div>
-          <label htmlFor="name">Name:</label>
-          <input id="name" type="text" {...register('name')} />
-        </div>
-        <div>
-          <label htmlFor="age">Age:</label>
-          <input id="age" type="number" {...register('age')} />
-        </div>
-        <div>
-          <label htmlFor="country">Select your country:</label>
-          <select id="country" {...register('country')}>
-            <option value="ru">Russia</option>
-            <option value="pl">Poland</option>
-            <option value="cz">Czechia</option>
-          </select>
-        </div>
-        <div>
-          <label htmlFor="gender">Gender:</label>
-          <select id="gender" {...register('gender')}>
-            <option value="male">Male</option>
-            <option value="female">Female</option>
-            <option value="other">Other</option>
-          </select>
-        </div>
-        <div>
-          <label htmlFor="email">Email:</label>
-          <input id="email" type="email" {...register('email')} />
-        </div>
-        <div>
-          <label htmlFor="password">Password:</label>
-          <input id="password" type="password" {...register('password')} />
-        </div>
-        <div>
-          <label htmlFor="confirmPassword">Confirm password:</label>
-          <input id="confirmPassword" type="password" {...register('confirmPassword')} />
-        </div>
-        <div>
-          <label htmlFor="fileUpload">Upload Picture:</label>
-          <input id="fileUpload" type="file" accept="image/jpeg, image/png" {...register('file')} />
-        </div>
-        <div>
-          <input id="terms" type="checkbox" {...register('accept')} />
-          <label htmlFor="terms">I accept the Terms and Conditions</label>
-        </div>
-        <button type="submit">Submit</button>
-      </form>
-    </div>
+    <Form title="React Hook Form" onSubmit={handleSubmit(onSubmit)}>
+      <Input id="name" label="Name" {...register('name')} />
+      <Input id="age" label="Age" type="number" {...register('age')} />
+      <Select
+        id="country"
+        label="Select your country"
+        options={[
+          { value: 'ru', label: 'Russia' },
+          { value: 'pl', label: 'Poland' },
+          { value: 'cz', label: 'Czechia' },
+        ]}
+        {...register('country')}
+      />
+      <Select
+        id="gender"
+        label="Gender"
+        options={[
+          { value: 'male', label: 'Male' },
+          { value: 'female', label: 'Female' },
+          { value: 'other', label: 'Other' },
+        ]}
+        {...register('gender')}
+      />
+      <Input id="email" label="Email" type="email" {...register('email')} />
+      <Input id="password" label="Password" type="password" {...register('password')} />
+      <Input id="confirmPassword" label="Confirm password" type="password" {...register('confirmPassword')} />
+      <Input id="file" label="Upload" type="file" accept="image/jpeg, image/png" {...register('file')} />
+      <Checkbox id="terms" label="I accept the Terms and Conditions" {...register('accept')} />
+      <Button type="submit">Submit</Button>
+    </Form>
   );
 };
 

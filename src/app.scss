@@ -1,4 +1,42 @@
+*, *::after, *::before {
+  padding: 0;
+  margin: 0;
+  border: 0;
+  box-sizing: border-box;
+  list-style: none;
+  text-decoration: none;
+  scroll-behavior: smooth;
+  color: black;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+:root {
+  font-family: Inter, system-ui, sans-serif;
+  --background-color: white;
+  --text-color: black;
+  --main-color: #146de1;
+}
+
+#root {
+  text-align: center;
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+}
+
 .nav {
   display: flex;
   gap: 1rem;
+  padding: 1rem;
+
+  > * {
+    &:hover {
+      color: var(--main-color);
+    }
+  }
 }

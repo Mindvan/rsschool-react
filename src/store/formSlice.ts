@@ -14,7 +14,7 @@ export interface FormData {
 
 interface FileData {
   name: string;
-  size: string;
+  size: number;
 }
 
 interface FormState {

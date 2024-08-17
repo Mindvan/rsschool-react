@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
-import Main from './components/Main';
+import Main from './components/Main/Main.tsx';
 import UncontrolledForm from './components/UncontrolledForm';
 import HookForm from './components/HookForm';
 import './app.scss';

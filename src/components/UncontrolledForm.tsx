@@ -2,6 +2,11 @@ import { FormEvent, useRef } from 'react';
 import { useDispatch } from 'react-redux';
 import { setUncontrolledFormData } from '../store/formSlice';
 import { FormData } from '../store/formSlice';
+import Input from './UI/Input/Input.tsx';
+import Select from './UI/Select/Select.tsx';
+import Checkbox from './UI/Checkbox/Checkbox.tsx';
+import Button from './UI/Button/Button.tsx';
+import Form from './Form/Form.tsx';
 
 const UncontrolledForm = () => {
   const dispatch = useDispatch();
@@ -29,66 +34,48 @@ const UncontrolledForm = () => {
       password: refs.password.current?.value || '',
       confirmPassword: refs.confirmPassword.current?.value || '',
       accept: refs.accept.current?.checked || false,
-      file: {
-        name: refs.file.current?.files?.[0].name,
-        size: refs.file.current?.files?.[0].size
-      } || null,
+      file: refs.file.current?.files?.[0]
+        ? {
+            name: refs.file.current?.files[0].name,
+            size: refs.file.current?.files[0].size,
+          }
+        : null,
     };
 
     dispatch(setUncontrolledFormData(data));
   };
 
   return (
-    <div>
-      <h2>Uncontrolled Form:</h2>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor="name">Name:</label>
-          <input id="name" type="text" ref={refs.name} />
-        </div>
-        <div>
-          <label htmlFor="age">Age:</label>
-          <input id="age" type="number" ref={refs.age} />
-        </div>
-        <div>
-          <label htmlFor="country">Select your country:</label>
-          <select id="country" ref={refs.country}>
-            <option value="ru">Russia</option>
-            <option value="pl">Poland</option>
-            <option value="cz">Czechia</option>
-          </select>
-        </div>
-        <div>
-          <label htmlFor="gender">Gender:</label>
-          <select id="gender" ref={refs.gender}>
-            <option value="male">Male</option>
-            <option value="female">Female</option>
-            <option value="other">Other</option>
-          </select>
-        </div>
-        <div>
-          <label htmlFor="email">Email:</label>
-          <input id="email" type="email" ref={refs.email} />
-        </div>
-        <div>
-          <label htmlFor="password">Password:</label>
-          <input id="password" type="password" ref={refs.password} />
-        </div>
-        <div>
-          <label htmlFor="confirmPassword">Confirm password:</label>
-          <input id="confirmPassword" type="password" ref={refs.confirmPassword} />
-        </div>
-        <div>
-          <label htmlFor="fileUpload">Upload Picture:</label>
-          <input id="fileUpload" type="file" accept="image/jpeg, image/png" ref={refs.file} />
-        </div>
-        <div>
-          <input id="terms" type="checkbox" ref={refs.accept} />
-          <label htmlFor="terms">I accept the Terms and Conditions</label>
-        </div>
-        <button type="submit">Submit</button>
-      </form>
-    </div>
+    <Form title="Uncontrolled Form" onSubmit={handleSubmit}>
+      <Input id="name" label="Name" ref={refs.name} />
+      <Input id="age" label="Age" type="number" ref={refs.age} />
+      <Select
+        id="country"
+        label="Select your country"
+        options={[
+          { value: 'ru', label: 'Russia' },
+          { value: 'pl', label: 'Poland' },
+          { value: 'cz', label: 'Czechia' },
+        ]}
+        ref={refs.country}
+      />
+      <Select
+        id="gender"
+        label="Gender"
+        options={[
+          { value: 'male', label: 'Male' },
+          { value: 'female', label: 'Female' },
+          { value: 'other', label: 'Other' },
+        ]}
+        ref={refs.gender}
+      />
+      <Input id="email" label="Email" type="email" ref={refs.email} />
+      <Input id="password" label="Password" type="password" ref={refs.password} />
+      <Input id="confirmPassword" label="Confirm password" type="password" ref={refs.confirmPassword} />
+      <Input id="file" label="Upload" type="file" accept="image/jpeg, image/png" ref={refs.file} />
+      <Checkbox id="terms" label="I accept the Terms and Conditions" ref={refs.accept} />
+      <Button type="submit">Submit</Button>
+    </Form>
   );
 };
 
