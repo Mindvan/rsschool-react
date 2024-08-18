@@ -6,3 +6,8 @@
   font-weight: 700;
   cursor: pointer;
 }
+
+.button[disabled=disabled], .button:disabled {
+  cursor: auto;
+  opacity: 0.3;
+}

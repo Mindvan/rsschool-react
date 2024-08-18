@@ -1,5 +1,8 @@
+@import '../../error';
+
 .checkboxWrapper {
   display: flex;
   gap: 0.25rem;
   justify-content: center;
+  position: relative;
 }

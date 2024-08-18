@@ -93,9 +93,9 @@ const UncontrolledForm = () => {
         id="gender"
         label="Gender"
         options={[
+          { value: 'other', label: 'Other' },
           { value: 'male', label: 'Male' },
           { value: 'female', label: 'Female' },
-          { value: 'other', label: 'Other' },
         ]}
         ref={refs.gender}
       />

@@ -1,0 +1,12 @@
+.error {
+  border-radius: 1rem;
+  padding: 0.25rem 0.5rem;
+  position: absolute;
+  color: var(--background-color);
+  font-size: 0.6rem;
+  top: 75%;
+  z-index: 1;
+  right: 0;
+  background: #c40000;
+  font-weight: 700;
+}

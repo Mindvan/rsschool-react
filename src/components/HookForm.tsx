@@ -1,71 +1,89 @@
-import { Path, useForm } from 'react-hook-form';
+import { Controller, Path, useForm } from 'react-hook-form';
 import { useAppDispatch, useAppSelector } from '../hooks/redux';
-import { setHookFormData } from '../store/formSlice';
+import { FormData, setHookFormData } from '../store/formSlice';
 import Input from './UI/Input/Input';
 import Autocomplete from './UI/Autocomplete/Autocomplete';
 import Checkbox from './UI/Checkbox/Checkbox';
 import Button from './UI/Button/Button';
 import Form from './Form/Form';
-import { FormData } from '../store/formSlice';
 import Select from './UI/Select/Select.tsx';
-import { ChangeEvent } from 'react';
 import { toBase64 } from '../utils/base64.ts';
+import { schema } from '../utils/validation/schema.ts';
+import { yupResolver } from '@hookform/resolvers/yup';
 
 const HookForm = () => {
-  const { register, handleSubmit, setValue, watch } = useForm<FormData>();
+  const {
+    control,
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting, isValid },
+  } = useForm<FormData>({
+    resolver: yupResolver(schema),
+    mode: 'onChange',
+  });
   const dispatch = useAppDispatch();
 
   const countries = useAppSelector(state => state.countries.list);
-  const selectedCountry = watch('country');
 
-  const onCountryChange = (value: string) => {
-    setValue('country' as Path<FormData>, value || '');
-  };
+  const onSubmit = async (data: FormData) => {
+    let d = { ...data };
 
-  const handleFileChange = async (event: ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
+    if (d.file && typeof d.file !== 'string') {
       try {
-        const base64String = await toBase64(file);
-        setValue('file' as Path<FormData>, base64String);
+        const base64String = await toBase64(d.file);
+        d = { ...d, file: base64String };
       } catch (error) {
-        throw new Error(error.message);
+        console.error('error converting to base64:', error.message);
+        return;
       }
     }
-  };
 
-  const onSubmit = (data: FormData) => {
-    dispatch(setHookFormData(data));
+    dispatch(setHookFormData(d));
   };
 
   return (
     <Form title="React Hook Form" onSubmit={handleSubmit(onSubmit)}>
-      <Input id="name" label="Name" {...register('name' as Path<FormData>)} />
-      <Input id="age" label="Age" type="number" {...register('age' as Path<FormData>)} />
-      <Autocomplete
-        id="country"
-        label="Select your country"
-        options={countries}
-        onChange={onCountryChange}
-        value={selectedCountry || ''}
+      <Input id="name" label="Name" {...register('name' as Path<FormData>)} error={errors.name?.message} />
+      <Input id="age" label="Age" type="number" {...register('age' as Path<FormData>)} error={errors.age?.message} />
+      <Controller
+        name="country"
+        control={control}
+        render={({ field }) => (
+          <Autocomplete
+            id="country"
+            label="Select your country"
+            options={countries}
+            onChange={value => field.onChange(value)}
+            value={field.value || ''}
+            error={errors.country?.message}
+          />
+        )}
       />
       <Select
         id="gender"
         label="Gender"
         options={[
+          { value: 'other', label: 'Other' },
           { value: 'male', label: 'Male' },
           { value: 'female', label: 'Female' },
-          { value: 'other', label: 'Other' },
         ]}
         {...register('gender' as Path<FormData>)}
+        error={errors.gender?.message}
       />
-      <Input id="email" label="Email" type="email" {...register('email' as Path<FormData>)} />
+      <Input
+        id="email"
+        label="Email"
+        type="email"
+        {...register('email' as Path<FormData>)}
+        error={errors.email?.message}
+      />
       <Input
         id="password"
         label="Password"
         type="password"
         autoComplete="on"
         {...register('password' as Path<FormData>)}
+        error={errors.password?.message}
       />
       <Input
         id="confirmPassword"
@@ -73,10 +91,46 @@ const HookForm = () => {
         autoComplete="on"
         type="password"
         {...register('confirmPassword' as Path<FormData>)}
+        error={errors.confirmPassword?.message}
       />
-      <Input id="file" label="Upload" type="file" accept="image/jpeg, image/png" onChange={handleFileChange} />
-      <Checkbox id="terms" label="I accept the Terms and Conditions" {...register('accept' as Path<FormData>)} />
-      <Button type="submit">Submit</Button>
+      <Controller
+        name="file"
+        control={control}
+        render={({ field: { onChange, onBlur, ref } }) => (
+          <Input
+            id="file"
+            label="Upload"
+            type="file"
+            accept="image/jpeg, image/png"
+            onChange={e => {
+              if (e.target.files?.[0]) {
+                onChange(e.target.files?.[0]);
+              }
+            }}
+            onBlur={onBlur}
+            ref={ref}
+            error={errors.file?.message}
+          />
+        )}
+      />
+      <Controller
+        name="accept"
+        control={control}
+        render={({ field: { onChange, onBlur, value, ref } }) => (
+          <Checkbox
+            id="terms"
+            label="I accept the Terms and Conditions"
+            checked={value}
+            onChange={e => onChange(e.target.checked)}
+            onBlur={onBlur}
+            ref={ref}
+            error={errors.accept?.message}
+          />
+        )}
+      />
+      <Button type="submit" disabled={isSubmitting || !isValid}>
+        Submit
+      </Button>
     </Form>
   );
 };

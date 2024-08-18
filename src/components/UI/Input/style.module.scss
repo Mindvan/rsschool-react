@@ -1,7 +1,10 @@
+@import '../../error';
+
 .inputWrapper {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  position: relative;
 }
 
 .input {

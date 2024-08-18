@@ -8,10 +8,11 @@ interface Props {
   options: string[];
   onChange: (selectedOption: string | null) => void;
   value: string | null;
+  error?: string;
 }
 
 const Autocomplete = forwardRef<HTMLInputElement, Props>(
-  ({ id, label, options, onChange, value }, ref: ForwardedRef<HTMLInputElement>) => {
+  ({ id, label, options, onChange, value, error }, ref: ForwardedRef<HTMLInputElement>) => {
     const [query, setQuery] = useState<string>('');
     const [filteredOptions, setFilteredOptions] = useState<string[]>([]);
     const [showOptions, setShowOptions] = useState<boolean>(false);
@@ -29,6 +30,7 @@ const Autocomplete = forwardRef<HTMLInputElement, Props>(
 
     const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
       const newValue = e.target.value;
+      console.log('Input changed:', newValue);
       setQuery(newValue);
       onChange(newValue);
       setFilteredOptions(filterOptions(newValue));
@@ -54,6 +56,7 @@ const Autocomplete = forwardRef<HTMLInputElement, Props>(
           onBlur={handleBlur}
           onFocus={handleFocus}
           ref={ref}
+          error={error}
         />
         {showOptions && filteredOptions.length > 0 && (
           <ul className={cls.autocompleteList}>
