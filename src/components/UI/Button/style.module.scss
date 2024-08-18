@@ -1,0 +1,13 @@
+.button {
+  border-radius: 0.5rem;
+  padding: 0.5rem 0.5rem;
+  background: var(--main-color);
+  color: white;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.button[disabled=disabled], .button:disabled {
+  cursor: auto;
+  opacity: 0.3;
+}
