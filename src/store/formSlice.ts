@@ -12,11 +12,6 @@ export interface FormData {
   accept: boolean;
 }
 
-// interface FileData {
-//   name: string;
-//   size: number;
-// }
-
 interface FormState {
   uncontrolledFormData: FormData;
   hookFormData: FormData;

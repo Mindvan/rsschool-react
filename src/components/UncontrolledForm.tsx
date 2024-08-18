@@ -1,4 +1,4 @@
-import { FormEvent, useRef } from 'react';
+import { ChangeEvent, FormEvent, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { setUncontrolledFormData } from '../store/formSlice';
 import { FormData } from '../store/formSlice';
@@ -8,10 +8,12 @@ import Checkbox from './UI/Checkbox/Checkbox.tsx';
 import Button from './UI/Button/Button.tsx';
 import Form from './Form/Form.tsx';
 import Autocomplete from './UI/Autocomplete/Autocomplete';
-import { RootState } from '../store';
+import { RootState } from '../store/store.ts';
+import { toBase64 } from '../utils/base64.ts';
 
 const UncontrolledForm = () => {
   const dispatch = useDispatch();
+
   const refs = {
     name: useRef<HTMLInputElement>(null),
     age: useRef<HTMLInputElement>(null),
@@ -26,6 +28,20 @@ const UncontrolledForm = () => {
 
   const countries = useSelector((state: RootState) => state.countries.list);
 
+  const handleFileChange = async (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      try {
+        const base64String = await toBase64(file);
+        if (refs.file.current) {
+          refs.file.current.dataset.base64 = base64String;
+        }
+      } catch (error) {
+        throw new Error(error.message);
+      }
+    }
+  };
+
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
 
@@ -38,12 +54,7 @@ const UncontrolledForm = () => {
       password: refs.password.current?.value || '',
       confirmPassword: refs.confirmPassword.current?.value || '',
       accept: refs.accept.current?.checked || false,
-      file: refs.file.current?.files?.[0]
-        ? {
-            name: refs.file.current?.files[0].name,
-            size: refs.file.current?.files[0].size,
-          }
-        : null,
+      file: refs.file.current?.dataset.base64 || null,
     };
 
     dispatch(setUncontrolledFormData(data));
@@ -84,7 +95,14 @@ const UncontrolledForm = () => {
         ref={refs.confirmPassword}
         autoComplete="on"
       />
-      <Input id="file" label="Upload" type="file" accept="image/jpeg, image/png" ref={refs.file} />
+      <Input
+        id="file"
+        label="Upload"
+        type="file"
+        accept="image/jpeg, image/png"
+        ref={refs.file}
+        onChange={handleFileChange}
+      />
       <Checkbox id="terms" label="I accept the Terms and Conditions" ref={refs.accept} />
       <Button type="submit">Submit</Button>
     </Form>

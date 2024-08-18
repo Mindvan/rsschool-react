@@ -1,4 +1,4 @@
-import { useForm } from 'react-hook-form';
+import { Path, useForm } from 'react-hook-form';
 import { useAppDispatch, useAppSelector } from '../hooks/redux';
 import { setHookFormData } from '../store/formSlice';
 import Input from './UI/Input/Input';
@@ -9,6 +9,7 @@ import Form from './Form/Form';
 import { FormData } from '../store/formSlice';
 import Select from './UI/Select/Select.tsx';
 import { ChangeEvent } from 'react';
+import { toBase64 } from '../utils/base64.ts';
 
 const HookForm = () => {
   const { register, handleSubmit, setValue, watch } = useForm<FormData>();
@@ -18,41 +19,29 @@ const HookForm = () => {
   const selectedCountry = watch('country');
 
   const onCountryChange = (value: string) => {
-    setValue('country', value || '');
+    setValue('country' as Path<FormData>, value || '');
   };
 
   const handleFileChange = async (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
-      if (!['image/jpeg', 'image/png'].includes(file.type)) {
-        alert('please select a PNG or JPEG image.');
-        return;
+      try {
+        const base64String = await toBase64(file);
+        setValue('file' as Path<FormData>, base64String);
+      } catch (error) {
+        throw new Error(error.message);
       }
-      if (file.size > 5 * 1024 * 1024) {
-        alert('image size exceeds 5mb');
-        return;
-      }
-
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        if (typeof reader.result === 'string') {
-          setValue('file', reader.result);
-        }
-      };
-      reader.readAsDataURL(file);
     }
   };
 
   const onSubmit = (data: FormData) => {
-    console.log('Selected Country on Submit:', data.country);
-    console.log('Form Data:', data);
     dispatch(setHookFormData(data));
   };
 
   return (
     <Form title="React Hook Form" onSubmit={handleSubmit(onSubmit)}>
-      <Input id="name" label="Name" {...register('name')} />
-      <Input id="age" label="Age" type="number" {...register('age')} />
+      <Input id="name" label="Name" {...register('name' as Path<FormData>)} />
+      <Input id="age" label="Age" type="number" {...register('age' as Path<FormData>)} />
       <Autocomplete
         id="country"
         label="Select your country"
@@ -68,19 +57,25 @@ const HookForm = () => {
           { value: 'female', label: 'Female' },
           { value: 'other', label: 'Other' },
         ]}
-        {...register('gender')}
+        {...register('gender' as Path<FormData>)}
       />
-      <Input id="email" label="Email" type="email" {...register('email')} />
-      <Input id="password" label="Password" type="password" autoComplete="on" {...register('password')} />
+      <Input id="email" label="Email" type="email" {...register('email' as Path<FormData>)} />
+      <Input
+        id="password"
+        label="Password"
+        type="password"
+        autoComplete="on"
+        {...register('password' as Path<FormData>)}
+      />
       <Input
         id="confirmPassword"
         label="Confirm password"
         autoComplete="on"
         type="password"
-        {...register('confirmPassword')}
+        {...register('confirmPassword' as Path<FormData>)}
       />
       <Input id="file" label="Upload" type="file" accept="image/jpeg, image/png" onChange={handleFileChange} />
-      <Checkbox id="terms" label="I accept the Terms and Conditions" {...register('accept')} />
+      <Checkbox id="terms" label="I accept the Terms and Conditions" {...register('accept' as Path<FormData>)} />
       <Button type="submit">Submit</Button>
     </Form>
   );
