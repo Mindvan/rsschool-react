@@ -1,38 +1,34 @@
-import { RootState } from '../../store/store.ts';
 import cls from './style.module.scss';
 import { useAppSelector } from '../../hooks/redux.ts';
-
-interface FormData {
-  [key: string]: string | number | null | File | undefined;
-}
+import { useEffect, useRef } from 'react';
+import { FormData } from '../../types/formData.ts';
 
 const headlines: Record<string, string> = {
-  accept: 'Agreed with the rules:',
-  email: 'E-mail:',
-  password: 'Your password:',
-  confirmPassword: 'Your confirmed password:',
-  country: 'Your country',
-  gender: 'Your gender',
-  age: 'Your age',
-  name: 'Your name',
+  accept: 'Agreed',
+  email: 'E-mail',
+  password: 'Password',
+  confirmPassword: 'Conf. password',
+  country: 'Country',
+  gender: 'Gender',
+  age: 'Age',
+  name: 'Name',
 };
 
 const renderData = (data: FormData) => {
-  const nonFileEntries = Object.entries(data).filter(([key]) => key !== 'file');
-  const fileEntries = Object.entries(data).filter(([key]) => key === 'file');
-
   return (
     <>
-      {nonFileEntries.map(([key, value]) => (
-        <div className={cls.dataWrapper} key={key}>
-          <span className={cls.dataKey}>{headlines[key] || key}:</span>
-          <span className={cls.dataValue}>{value !== null ? String(value) : ''}</span>
-        </div>
-      ))}
-      {fileEntries.map(([key, value]) => (
-        <div className={cls.dataWrapperImage} key={key}>
-          <span className={cls.dataKey}>Your file:</span>
-          <img src={`${value}`} alt={key} />
+      {Object.entries(data).map(([key, value]) => (
+        <div className={key === 'file' ? cls.dataWrapperImage : cls.dataWrapper} key={key}>
+          <span className={cls.dataKey}>{key === 'file' ? 'Your file:' : (headlines[key] || key) + ':'}</span>
+          {key === 'file' ? (
+            value && typeof value === 'string' ? (
+              <img src={value} alt="Uploaded file" />
+            ) : (
+              <div>No file uploaded</div>
+            )
+          ) : (
+            <span className={cls.dataValue}>{value !== null ? String(value) : ''}</span>
+          )}
         </div>
       ))}
     </>
@@ -40,31 +36,35 @@ const renderData = (data: FormData) => {
 };
 
 const Main = () => {
-  const uncontrolledFormData = useAppSelector((state: RootState) => state.form.uncontrolledFormData);
-  const hookFormData = useAppSelector((state: RootState) => state.form.hookFormData);
-  const submittedForm = useAppSelector((state: RootState) => state.form.submittedForm);
+  const submissions = useAppSelector(state => state.form.submissions);
+  const endOfListRef = useRef<HTMLDivElement>(null);
 
-  console.log(submittedForm);
-
-  const hasData = (data: FormData) =>
-    Object.values(data).some(value => value !== '' && value !== null && value !== false);
+  useEffect(() => {
+    if (submissions.length > 0) {
+      if (endOfListRef.current) {
+        endOfListRef.current.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+  }, [submissions]);
 
   return (
     <div className={cls.flex}>
-      <div
-        className={
-          submittedForm === 'uncontrolled' ? `${cls.flexItemLeft} ${cls.animateHighlight}` : `${cls.flexItemLeft}`
-        }
-      >
-        <h2>Uncontrolled</h2>
-        {hasData(uncontrolledFormData) ? renderData(uncontrolledFormData) : <div>Данных нет</div>}
-      </div>
-      <div
-        className={submittedForm === 'hook' ? `${cls.flexItemRight} ${cls.animateHighlight}` : `${cls.flexItemRight}`}
-      >
-        <h2>React Hook Form</h2>
-        {hasData(hookFormData) ? renderData(hookFormData) : <div>Данных нет</div>}
-      </div>
+      <h1>All Submissions</h1>
+      {submissions.length === 0 ? (
+        <p>No submissions yet.</p>
+      ) : (
+        <ul className={cls.submissionsList}>
+          {submissions.map((submission, index) => {
+            const isLastSubmission = index === submissions.length - 1;
+            return (
+              <li key={index} className={`${cls.submissionsItem} ${isLastSubmission ? cls.highlight : ''}`}>
+                {renderData(submission)}
+              </li>
+            );
+          })}
+          <div ref={endOfListRef} />
+        </ul>
+      )}
     </div>
   );
 };

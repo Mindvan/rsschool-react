@@ -1,6 +1,6 @@
 import { ChangeEvent, FormEvent, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { setSubmittedForm, setUncontrolledFormData } from '../store/formSlice';
+import { addSubmission, setUncontrolledFormData } from '../store/formSlice';
 import Input from './UI/Input/Input.tsx';
 import Select from './UI/Select/Select.tsx';
 import Checkbox from './UI/Checkbox/Checkbox.tsx';
@@ -8,7 +8,7 @@ import Button from './UI/Button/Button.tsx';
 import Form from './Form/Form.tsx';
 import Autocomplete from './UI/Autocomplete/Autocomplete';
 import { RootState } from '../store/store.ts';
-import { toBase64 } from '../utils/base64.ts';
+import { imageToBase64 } from '../utils/base64.ts';
 import { FormErrors } from '../types/formErrors.ts';
 import { validateForm } from '../utils/validation/validation.ts';
 import { useNavigate } from 'react-router-dom';
@@ -67,7 +67,7 @@ const UncontrolledForm = () => {
 
       if (file) {
         try {
-          fileBase64 = await toBase64(file);
+          fileBase64 = await imageToBase64(file);
         } catch (error) {
           console.error('error converting to base64:', error);
         }
@@ -79,8 +79,14 @@ const UncontrolledForm = () => {
       };
 
       dispatch(setUncontrolledFormData(data));
-      dispatch(setSubmittedForm('uncontrolled'));
+      dispatch(addSubmission(data));
       navigate('/', { state: { formData: data } });
+    }
+  };
+
+  const handleCountryChange = selectedOption => {
+    if (refs.country.current) {
+      refs.country.current.value = selectedOption || '';
     }
   };
 
@@ -92,11 +98,7 @@ const UncontrolledForm = () => {
         id="country"
         label="Select your country"
         options={countries}
-        onChange={value => {
-          if (refs.country.current) {
-            refs.country.current.value = value || '';
-          }
-        }}
+        onChange={value => handleCountryChange(value)}
         value={refs.country.current?.value || ''}
         ref={refs.country}
         error={errors.country}

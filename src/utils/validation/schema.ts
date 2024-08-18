@@ -10,7 +10,7 @@ export const schema = yup.object().shape({
     .string()
     .required('Name is required.')
     .matches(/^[A-Z]/, 'Name must start with an uppercase letter.')
-    .min(2, 'Password must be at least 2 characters.'),
+    .min(2, 'Name must be at least 2 characters.'),
 
   age: yup
     .number()

@@ -2,6 +2,10 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { FormData } from '../types/formData.ts';
 import { FormState } from '../types/formState.ts';
 
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { FormData } from '../types/formData.ts';
+import { FormState } from '../types/formState.ts';
+
 const initialState: FormState = {
   uncontrolledFormData: {
     name: '',
@@ -25,7 +29,7 @@ const initialState: FormState = {
     file: null,
     accept: false,
   },
-  submittedForm: null,
+  submissions: [],
 };
 
 const formSlice = createSlice({
@@ -38,11 +42,11 @@ const formSlice = createSlice({
     setHookFormData: (state, action: PayloadAction<FormData>) => {
       state.hookFormData = action.payload;
     },
-    setSubmittedForm: (state, action: PayloadAction<'uncontrolled' | 'hook'>) => {
-      state.submittedForm = action.payload;
+    addSubmission: (state, action: PayloadAction<FormData>) => {
+      state.submissions.push(action.payload);
     },
   },
 });
 
-export const { setUncontrolledFormData, setHookFormData, setSubmittedForm } = formSlice.actions;
+export const { setUncontrolledFormData, setHookFormData, addSubmission } = formSlice.actions;
 export default formSlice.reducer;

@@ -1,15 +1,10 @@
-import { ButtonHTMLAttributes, FC } from 'react';
-import Icon from '../Icon/Icon.tsx';
+import { FC } from 'react';
 import cls from './style.module.scss';
 
-interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
-  icon?: boolean;
-}
-
-const Button: FC<Props> = ({ icon, children, ...props }) => {
+const Button: FC = ({ children, ...props }) => {
   return (
     <button className={cls.button} {...props}>
-      {children} {icon && <Icon />}
+      {children}
     </button>
   );
 };

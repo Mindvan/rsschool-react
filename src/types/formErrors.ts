@@ -1,3 +1,3 @@
 export type FormErrors = {
-  [key: string]: string;
+  [key in keyof FormData]?: string;
 };

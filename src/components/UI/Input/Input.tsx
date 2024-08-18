@@ -1,7 +1,7 @@
-import { ChangeEvent, ForwardedRef, forwardRef } from 'react';
+import { ChangeEvent, ForwardedRef, forwardRef, InputHTMLAttributes } from 'react';
 import cls from './style.module.scss';
 
-interface Props {
+interface Props extends InputHTMLAttributes<HTMLInputElement> {
   id: string;
   label: string;
   type?: string;

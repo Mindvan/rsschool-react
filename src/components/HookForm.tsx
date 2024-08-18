@@ -1,13 +1,13 @@
 import { Controller, Path, useForm } from 'react-hook-form';
 import { useAppDispatch, useAppSelector } from '../hooks/redux';
-import { setHookFormData, setSubmittedForm } from '../store/formSlice';
+import { addSubmission, setHookFormData } from '../store/formSlice';
 import Input from './UI/Input/Input';
 import Autocomplete from './UI/Autocomplete/Autocomplete';
 import Checkbox from './UI/Checkbox/Checkbox';
 import Button from './UI/Button/Button';
 import Form from './Form/Form';
 import Select from './UI/Select/Select.tsx';
-import { toBase64 } from '../utils/base64.ts';
+import { imageToBase64 } from '../utils/base64.ts';
 import { schema } from '../utils/validation/schema.ts';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useNavigate } from 'react-router-dom';
@@ -33,7 +33,7 @@ const HookForm = () => {
 
     if (d.file && typeof d.file !== 'string') {
       try {
-        const base64String = await toBase64(d.file);
+        const base64String = await imageToBase64(d.file);
         d = { ...d, file: base64String };
       } catch (error) {
         console.error('error converting to base64:', error.message);
@@ -42,14 +42,14 @@ const HookForm = () => {
     }
 
     dispatch(setHookFormData(d));
-    dispatch(setSubmittedForm('hook'));
+    dispatch(addSubmission(d));
     navigate('/', { state: { formData: d } });
   };
 
   return (
     <Form title="React Hook Form" onSubmit={handleSubmit(onSubmit)}>
-      <Input id="name" label="Name" {...register('name' as Path<FormData>)} error={errors.name?.message} />
-      <Input id="age" label="Age" type="number" {...register('age' as Path<FormData>)} error={errors.age?.message} />
+      <Input id="name" label="Name" {...register('name')} error={errors.name?.message} />
+      <Input id="age" label="Age" type="number" {...register('age')} error={errors.age?.message} />
       <Controller
         name="country"
         control={control}
@@ -72,14 +72,13 @@ const HookForm = () => {
           { value: 'male', label: 'Male' },
           { value: 'female', label: 'Female' },
         ]}
-        {...register('gender' as Path<FormData>)}
-        error={errors.gender?.message}
+        {...register('gender')}
       />
       <Input
         id="email"
         label="Email"
         type="email"
-        {...register('email' as Path<FormData>)}
+        {...register('email')}
         error={errors.email?.message}
       />
       <Input
@@ -87,7 +86,7 @@ const HookForm = () => {
         label="Password"
         type="password"
         autoComplete="on"
-        {...register('password' as Path<FormData>)}
+        {...register('password')}
         error={errors.password?.message}
       />
       <Input
@@ -95,7 +94,7 @@ const HookForm = () => {
         label="Confirm password"
         autoComplete="on"
         type="password"
-        {...register('confirmPassword' as Path<FormData>)}
+        {...register('confirmPassword')}
         error={errors.confirmPassword?.message}
       />
       <Controller
