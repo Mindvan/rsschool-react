@@ -8,7 +8,7 @@ export interface FormData {
   email: string;
   password: string;
   confirmPassword: string;
-  file: string | null;
+  file: File | string | null;
   accept: boolean;
 }
 

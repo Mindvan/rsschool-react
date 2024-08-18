@@ -16,6 +16,7 @@ import { validateForm } from '../utils/validation/uncontrolledValidation.ts';
 const UncontrolledForm = () => {
   const dispatch = useDispatch();
   const [errors, setErrors] = useState<FormErrors>({});
+  const [accept, setAccept] = useState(false);
 
   const refs = {
     name: useRef<HTMLInputElement>(null),
@@ -35,24 +36,17 @@ const UncontrolledForm = () => {
     setErrors(errors);
   };
 
-  const handleFileChange = async (event: ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      try {
-        const base64String = await toBase64(file);
-        if (refs.file.current) {
-          refs.file.current.dataset.base64 = base64String;
-        }
-      } catch (error) {
-        throw new Error(error.message);
-      }
-    }
+  const handleCheckboxChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setAccept(e.target.checked);
   };
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
-    const data: FormData = {
+    const fileInput = refs.file.current;
+    const file = fileInput?.files?.[0] || null;
+
+    const dataWithRawFile: FormData = {
       name: refs.name.current?.value || '',
       age: refs.age.current?.value ? +refs.age.current.value : null,
       gender: refs.gender.current?.value || '',
@@ -61,22 +55,35 @@ const UncontrolledForm = () => {
       password: refs.password.current?.value || '',
       confirmPassword: refs.confirmPassword.current?.value || '',
       accept: refs.accept.current?.checked || false,
-      file: refs.file.current?.dataset.base64 || null,
+      file: file,
     };
 
-    const isValid = await validateForm(data, handleErrors);
-
-    console.log(isValid, errors);
+    const isValid = await validateForm(dataWithRawFile, handleErrors);
 
     if (isValid) {
+      let fileBase64: string | null = null;
+
+      if (file) {
+        try {
+          fileBase64 = await toBase64(file);
+        } catch (error) {
+          console.error('error converting to base64:', error);
+        }
+      }
+
+      const data: FormData = {
+        ...dataWithRawFile,
+        file: fileBase64 || null,
+      };
+
       dispatch(setUncontrolledFormData(data));
     }
   };
 
   return (
     <Form title="Uncontrolled Form" onSubmit={handleSubmit}>
-      <Input id="name" label="Name" ref={refs.name} />
-      <Input id="age" label="Age" type="number" ref={refs.age} />
+      <Input id="name" label="Name" ref={refs.name} error={errors.name} />
+      <Input id="age" label="Age" type="number" ref={refs.age} error={errors.age} />
       <Autocomplete
         id="country"
         label="Select your country"
@@ -88,6 +95,7 @@ const UncontrolledForm = () => {
         }}
         value={refs.country.current?.value || ''}
         ref={refs.country}
+        error={errors.country}
       />
       <Select
         id="gender"
@@ -98,25 +106,34 @@ const UncontrolledForm = () => {
           { value: 'female', label: 'Female' },
         ]}
         ref={refs.gender}
+        error={errors.gender}
       />
-      <Input id="email" label="Email" type="email" ref={refs.email} />
-      <Input id="password" label="Password" type="password" ref={refs.password} autoComplete="on" />
+      <Input id="email" label="Email" type="email" ref={refs.email} error={errors.email} />
+      <Input
+        id="password"
+        label="Password"
+        type="password"
+        ref={refs.password}
+        autoComplete="on"
+        error={errors.password}
+      />
       <Input
         id="confirmPassword"
         label="Confirm password"
         type="password"
         ref={refs.confirmPassword}
         autoComplete="on"
+        error={errors.confirmPassword}
       />
-      <Input
-        id="file"
-        label="Upload"
-        type="file"
-        accept="image/jpeg, image/png"
-        ref={refs.file}
-        onChange={handleFileChange}
+      <Input id="file" label="Upload" type="file" accept="image/jpeg, image/png" ref={refs.file} error={errors.file} />
+      <Checkbox
+        id="terms"
+        label="I accept the Terms and Conditions"
+        checked={accept}
+        ref={refs.accept}
+        onChange={handleCheckboxChange}
+        error={errors.accept}
       />
-      <Checkbox id="terms" label="I accept the Terms and Conditions" ref={refs.accept} />
       <Button type="submit">Submit</Button>
     </Form>
   );
