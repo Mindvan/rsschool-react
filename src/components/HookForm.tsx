@@ -1,6 +1,6 @@
 import { Controller, Path, useForm } from 'react-hook-form';
 import { useAppDispatch, useAppSelector } from '../hooks/redux';
-import { setHookFormData } from '../store/formSlice';
+import { setHookFormData, setSubmittedForm } from '../store/formSlice';
 import Input from './UI/Input/Input';
 import Autocomplete from './UI/Autocomplete/Autocomplete';
 import Checkbox from './UI/Checkbox/Checkbox';
@@ -42,6 +42,7 @@ const HookForm = () => {
     }
 
     dispatch(setHookFormData(d));
+    dispatch(setSubmittedForm('hook'));
     navigate('/', { state: { formData: d } });
   };
 
@@ -120,14 +121,14 @@ const HookForm = () => {
       <Controller
         name="accept"
         control={control}
-        render={({ field: { onChange, onBlur, value, ref } }) => (
+        defaultValue={false}
+        render={({ field: { onChange, onBlur, value } }) => (
           <Checkbox
             id="terms"
             label="I accept the Terms and Conditions"
             checked={value}
             onChange={e => onChange(e.target.checked)}
             onBlur={onBlur}
-            ref={ref}
             error={errors.accept?.message}
           />
         )}

@@ -1,6 +1,6 @@
 import { ChangeEvent, FormEvent, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { setUncontrolledFormData } from '../store/formSlice';
+import { setSubmittedForm, setUncontrolledFormData } from '../store/formSlice';
 import Input from './UI/Input/Input.tsx';
 import Select from './UI/Select/Select.tsx';
 import Checkbox from './UI/Checkbox/Checkbox.tsx';
@@ -10,7 +10,7 @@ import Autocomplete from './UI/Autocomplete/Autocomplete';
 import { RootState } from '../store/store.ts';
 import { toBase64 } from '../utils/base64.ts';
 import { FormErrors } from '../types/formErrors.ts';
-import { validateForm } from '../utils/validation/uncontrolledValidation.ts';
+import { validateForm } from '../utils/validation/validation.ts';
 import { useNavigate } from 'react-router-dom';
 import { FormData } from '../types/formData.ts';
 
@@ -79,6 +79,7 @@ const UncontrolledForm = () => {
       };
 
       dispatch(setUncontrolledFormData(data));
+      dispatch(setSubmittedForm('uncontrolled'));
       navigate('/', { state: { formData: data } });
     }
   };
