@@ -1,4 +1,4 @@
-import { ChangeEvent, FormEvent, useRef } from 'react';
+import { ChangeEvent, FormEvent, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { setUncontrolledFormData } from '../store/formSlice';
 import { FormData } from '../store/formSlice';
@@ -10,9 +10,12 @@ import Form from './Form/Form.tsx';
 import Autocomplete from './UI/Autocomplete/Autocomplete';
 import { RootState } from '../store/store.ts';
 import { toBase64 } from '../utils/base64.ts';
+import { FormErrors } from '../types/formErrors.ts';
+import { validateForm } from '../utils/validation/uncontrolledValidation.ts';
 
 const UncontrolledForm = () => {
   const dispatch = useDispatch();
+  const [errors, setErrors] = useState<FormErrors>({});
 
   const refs = {
     name: useRef<HTMLInputElement>(null),
@@ -28,6 +31,10 @@ const UncontrolledForm = () => {
 
   const countries = useSelector((state: RootState) => state.countries.list);
 
+  const handleErrors = (errors: FormErrors) => {
+    setErrors(errors);
+  };
+
   const handleFileChange = async (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
@@ -42,7 +49,7 @@ const UncontrolledForm = () => {
     }
   };
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
     const data: FormData = {
@@ -57,7 +64,13 @@ const UncontrolledForm = () => {
       file: refs.file.current?.dataset.base64 || null,
     };
 
-    dispatch(setUncontrolledFormData(data));
+    const isValid = await validateForm(data, handleErrors);
+
+    console.log(isValid, errors);
+
+    if (isValid) {
+      dispatch(setUncontrolledFormData(data));
+    }
   };
 
   return (
