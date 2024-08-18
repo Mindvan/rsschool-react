@@ -1,10 +1,10 @@
-import { useSelector } from 'react-redux';
 import { RootState } from '../../store/store.ts';
 import cls from './style.module.scss';
+import { useAppSelector } from '../../hooks/redux.ts';
 
 const Main = () => {
-  const uncontrolledFormData = useSelector((state: RootState) => state.form.uncontrolledFormData);
-  const hookFormData = useSelector((state: RootState) => state.form.hookFormData);
+  const uncontrolledFormData = useAppSelector((state: RootState) => state.form.uncontrolledFormData);
+  const hookFormData = useAppSelector((state: RootState) => state.form.hookFormData);
 
   return (
     <div className={cls.flex}>

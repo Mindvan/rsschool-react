@@ -30,7 +30,6 @@ const Autocomplete = forwardRef<HTMLInputElement, Props>(
 
     const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
       const newValue = e.target.value;
-      console.log('Input changed:', newValue);
       setQuery(newValue);
       onChange(newValue);
       setFilteredOptions(filterOptions(newValue));

@@ -1,6 +1,6 @@
 import { Controller, Path, useForm } from 'react-hook-form';
 import { useAppDispatch, useAppSelector } from '../hooks/redux';
-import { FormData, setHookFormData } from '../store/formSlice';
+import { setHookFormData } from '../store/formSlice';
 import Input from './UI/Input/Input';
 import Autocomplete from './UI/Autocomplete/Autocomplete';
 import Checkbox from './UI/Checkbox/Checkbox';
@@ -10,8 +10,11 @@ import Select from './UI/Select/Select.tsx';
 import { toBase64 } from '../utils/base64.ts';
 import { schema } from '../utils/validation/schema.ts';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { useNavigate } from 'react-router-dom';
+import { FormData } from '../types/formData.ts';
 
 const HookForm = () => {
+  const navigate = useNavigate();
   const {
     control,
     register,
@@ -39,6 +42,7 @@ const HookForm = () => {
     }
 
     dispatch(setHookFormData(d));
+    navigate('/', { state: { formData: d } });
   };
 
   return (

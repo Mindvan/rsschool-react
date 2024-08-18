@@ -1,7 +1,7 @@
 import * as yup from 'yup';
 import { FormErrors } from '../../types/formErrors.ts';
-import { FormData } from '../../store/formSlice';
 import { schema } from './schema.ts';
+import { FormData } from '../../types/formData.ts';
 
 export const validateForm = async (data: FormData, handleErrors: (errors: FormErrors) => void) => {
   try {

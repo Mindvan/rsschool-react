@@ -1,7 +1,6 @@
 import { ChangeEvent, FormEvent, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { setUncontrolledFormData } from '../store/formSlice';
-import { FormData } from '../store/formSlice';
 import Input from './UI/Input/Input.tsx';
 import Select from './UI/Select/Select.tsx';
 import Checkbox from './UI/Checkbox/Checkbox.tsx';
@@ -12,8 +11,11 @@ import { RootState } from '../store/store.ts';
 import { toBase64 } from '../utils/base64.ts';
 import { FormErrors } from '../types/formErrors.ts';
 import { validateForm } from '../utils/validation/uncontrolledValidation.ts';
+import { useNavigate } from 'react-router-dom';
+import { FormData } from '../types/formData.ts';
 
 const UncontrolledForm = () => {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const [errors, setErrors] = useState<FormErrors>({});
   const [accept, setAccept] = useState(false);
@@ -77,6 +79,7 @@ const UncontrolledForm = () => {
       };
 
       dispatch(setUncontrolledFormData(data));
+      navigate('/', { state: { formData: data } });
     }
   };
 

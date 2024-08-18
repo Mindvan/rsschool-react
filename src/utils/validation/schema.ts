@@ -45,7 +45,6 @@ export const schema = yup.object().shape({
       return value && value.size <= 102400;
     })
     .test('fileType', 'Unsupported File Format', value => {
-      console.log(value);
       return !(value && !['image/jpeg', 'image/png'].includes(value.type));
     })
     .required('File is required.'),
